@@ -1,0 +1,12 @@
+[33m[01m[05m[ You are changing the branch: lab0-exam ][0m
+Autotest: Begin at Thu Mar 17 14:13:38 CST 2022
+gcc hello_os.c -o os_hello
+[32m[ You have passed make test ][0m
+rm os_hello
+[32m[ You have passed make clean test ][0m
+bash: lab0-exam.sh: No such file or directory
+[31m[01m[ You have not passed file test ][0m
+diff: /home/git/ostest/target/20373673/lab0-exam-2022-03-17T14:13:38+08:00-u7ATu/hello_os.txt: No such file or directory
+[31m[01m[ You have not passed grep test ][0m
+[33m[01m[ You got 50 (of 100) this time. Thu Mar 17 14:13:41 CST 2022 ][0m
+Autotest: End at Thu Mar 17 14:13:41 CST 2022
