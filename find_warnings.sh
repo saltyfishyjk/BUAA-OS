@@ -1,7 +1,6 @@
 #!/bin/bash
 gcc -Wall $1 -o test 2> warning.txt
 grep warning:  warning.txt | awk -F warning:\  '{print $1$2}' > result.txt
-echo $?
 if [ $? -eq 0 ]
 	then 
 	a=1
