@@ -1,0 +1,2 @@
+3:	puts("Hello World!");// os_hello
+4:	return 0;// os_hello
