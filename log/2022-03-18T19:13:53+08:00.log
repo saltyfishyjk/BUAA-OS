@@ -1,0 +1,17 @@
+Manual Autotest: Begin at 2022年 03月 18日 星期五 19:13:53 CST
+Files /home/git/ostest/target/20373673/lab0-Extra-2022-03-18T19:13:53+08:00-CYopH/result.txt and /home/git/ostest/target/20373673/lab0-Extra-2022-03-18T19:13:53+08:00-CYopH/result_ans.txt differ
+[31m[01m[ You have not passed testcase 1/10. ][0m
+Files /home/git/ostest/target/20373673/lab0-Extra-2022-03-18T19:13:53+08:00-CYopH/result.txt and /home/git/ostest/target/20373673/lab0-Extra-2022-03-18T19:13:53+08:00-CYopH/result_ans.txt differ
+[31m[01m[ You have not passed testcase 2/10. ][0m
+Files /home/git/ostest/target/20373673/lab0-Extra-2022-03-18T19:13:53+08:00-CYopH/result.txt and /home/git/ostest/target/20373673/lab0-Extra-2022-03-18T19:13:53+08:00-CYopH/result_ans.txt differ
+[31m[01m[ You have not passed testcase 3/10. ][0m
+Files /home/git/ostest/target/20373673/lab0-Extra-2022-03-18T19:13:53+08:00-CYopH/result.txt and /home/git/ostest/target/20373673/lab0-Extra-2022-03-18T19:13:53+08:00-CYopH/result_ans.txt differ
+[31m[01m[ You have not passed testcase 4/10. ][0m
+[32m[ You have passed testcase 5/10. ][0m
+[32m[ You have passed testcase 6/10. ][0m
+[32m[ You have passed testcase 7/10. ][0m
+[32m[ You have passed testcase 8/10. ][0m
+[32m[ You have passed testcase 9/10. ][0m
+[32m[ You have passed testcase 10/10. ][0m
+[33m[01m[ You got 60 (of 100) this time. 2022年 03月 18日 星期五 19:14:53 CST ][0m
+Autotest: End at 2022年 03月 18日 星期五 19:14:53 CST

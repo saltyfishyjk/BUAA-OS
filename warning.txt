@@ -1,7 +1,0 @@
-/home/git/20373673/test.c: In function 'main':
-/home/git/20373673/test.c:5:8: warning: comparisons like 'X<=Y<=Z' do not have their mathematical meaning [-Wparentheses]
-    5 |  if(2<3<4)
-      |        ^
-/home/git/20373673/test.c:4:8: warning: unused variable 'b' [-Wunused-variable]
-    4 |  int a,b;
-      |        ^
