@@ -1,0 +1,366 @@
+[33m[01m[05m[ You are changing the branch: lab0 ][0m
+Autotest: Begin at Sat Mar 19 14:09:13 CST 2022
+[33m[01m[ (1)Start to test exercise0.1(4) ][0m
+[32m[ You have passed exercise0.1(4) ][0m
+[33m[01m[ (2)Start to test exercise0.1(3) ][0m
+runtime/cgo: pthread_create failed: Resource temporarily unavailable
+SIGABRT: abort
+PC=0x7fd302c2b03b m=9 sigcode=18446744073709551610
+
+goroutine 0 [idle]:
+runtime: unknown pc 0x7fd302c2b03b
+stack: frame={sp:0x7fd263ffe840, fp:0x0} stack=[0x7fd253fff288,0x7fd263ffee88)
+00007fd263ffe740:  0000000002800000  00007fd263ffeb90 
+00007fd263ffe750:  00007fd23bffdfc0  00007fd302e25187 
+00007fd263ffe760:  0000000000000005  0000000000000000 
+00007fd263ffe770:  0000000000000000  00007fd302bf2628 
+00007fd263ffe780:  00007fd263ffe9d0  00007fd302e2caa7 
+00007fd263ffe790:  0000000000000000  0000000000000001 
+00007fd263ffe7a0:  0000000000000000  0000000010001000 
+00007fd263ffe7b0:  00007fd22bffe000  0000000000000000 
+00007fd263ffe7c0:  00007fd23bffe700  0000000000000000 
+00007fd263ffe7d0:  000000000000037f  0000000000000000 
+00007fd263ffe7e0:  0000000000000000  0000ffff00001fa0 
+00007fd263ffe7f0:  0000000000000000  0000000000000000 
+00007fd263ffe800:  0000000000000000  0000000000000000 
+00007fd263ffe810:  0000000000000000  0000000000000000 
+00007fd263ffe820:  0000000000000000  0000000000000000 
+00007fd263ffe830:  0000000000000000  0000000000000000 
+00007fd263ffe840: <0000000000000000  0000000000000000 
+00007fd263ffe850:  0000000000000000  0000000000000000 
+00007fd263ffe860:  0000000000000000  0000000000000000 
+00007fd263ffe870:  00007fd23bffe9e0  00007fd23bffe9e0 
+00007fd263ffe880:  0000000000000000  0000000000000000 
+00007fd263ffe890:  4130e41800000000  0000000000000000 
+00007fd263ffe8a0:  0000000000000000  0000000000000000 
+00007fd263ffe8b0:  0000000000000000  0000000000000000 
+00007fd263ffe8c0:  fffffffe7fffffff  ffffffffffffffff 
+00007fd263ffe8d0:  ffffffffffffffff  ffffffffffffffff 
+00007fd263ffe8e0:  ffffffffffffffff  ffffffffffffffff 
+00007fd263ffe8f0:  ffffffffffffffff  ffffffffffffffff 
+00007fd263ffe900:  ffffffffffffffff  ffffffffffffffff 
+00007fd263ffe910:  ffffffffffffffff  ffffffffffffffff 
+00007fd263ffe920:  ffffffffffffffff  ffffffffffffffff 
+00007fd263ffe930:  ffffffffffffffff  ffffffffffffffff 
+runtime: unknown pc 0x7fd302c2b03b
+stack: frame={sp:0x7fd263ffe840, fp:0x0} stack=[0x7fd253fff288,0x7fd263ffee88)
+00007fd263ffe740:  0000000002800000  00007fd263ffeb90 
+00007fd263ffe750:  00007fd23bffdfc0  00007fd302e25187 
+00007fd263ffe760:  0000000000000005  0000000000000000 
+00007fd263ffe770:  0000000000000000  00007fd302bf2628 
+00007fd263ffe780:  00007fd263ffe9d0  00007fd302e2caa7 
+00007fd263ffe790:  0000000000000000  0000000000000001 
+00007fd263ffe7a0:  0000000000000000  0000000010001000 
+00007fd263ffe7b0:  00007fd22bffe000  0000000000000000 
+00007fd263ffe7c0:  00007fd23bffe700  0000000000000000 
+00007fd263ffe7d0:  000000000000037f  0000000000000000 
+00007fd263ffe7e0:  0000000000000000  0000ffff00001fa0 
+00007fd263ffe7f0:  0000000000000000  0000000000000000 
+00007fd263ffe800:  0000000000000000  0000000000000000 
+00007fd263ffe810:  0000000000000000  0000000000000000 
+00007fd263ffe820:  0000000000000000  0000000000000000 
+00007fd263ffe830:  0000000000000000  0000000000000000 
+00007fd263ffe840: <0000000000000000  0000000000000000 
+00007fd263ffe850:  0000000000000000  0000000000000000 
+00007fd263ffe860:  0000000000000000  0000000000000000 
+00007fd263ffe870:  00007fd23bffe9e0  00007fd23bffe9e0 
+00007fd263ffe880:  0000000000000000  0000000000000000 
+00007fd263ffe890:  4130e41800000000  0000000000000000 
+00007fd263ffe8a0:  0000000000000000  0000000000000000 
+00007fd263ffe8b0:  0000000000000000  0000000000000000 
+00007fd263ffe8c0:  fffffffe7fffffff  ffffffffffffffff 
+00007fd263ffe8d0:  ffffffffffffffff  ffffffffffffffff 
+00007fd263ffe8e0:  ffffffffffffffff  ffffffffffffffff 
+00007fd263ffe8f0:  ffffffffffffffff  ffffffffffffffff 
+00007fd263ffe900:  ffffffffffffffff  ffffffffffffffff 
+00007fd263ffe910:  ffffffffffffffff  ffffffffffffffff 
+00007fd263ffe920:  ffffffffffffffff  ffffffffffffffff 
+00007fd263ffe930:  ffffffffffffffff  ffffffffffffffff 
+
+goroutine 1 [semacquire, locked to thread]:
+github.com/docker/cli/vendor/github.com/golang/protobuf/proto.RegisterType(0x5640b5ecdcc0, 0x0, 0x5640b544d231, 0x17)
+	/build/docker.io-NgswvZ/docker.io-20.10.7/.gopath/src/github.com/docker/cli/vendor/github.com/golang/protobuf/proto/properties.go:493 +0x1df
+github.com/docker/cli/vendor/github.com/googleapis/gnostic/OpenAPIv2.init.0()
+	/build/docker.io-NgswvZ/docker.io-20.10.7/.gopath/src/github.com/docker/cli/vendor/github.com/googleapis/gnostic/OpenAPIv2/OpenAPIv2.pb.go:4203 +0x21d
+
+goroutine 8 [syscall]:
+os/signal.signal_recv(0x5640b3ebbc86)
+	/usr/lib/go-1.13/src/runtime/sigqueue.go:147 +0x9e
+os/signal.loop()
+	/usr/lib/go-1.13/src/os/signal/signal_unix.go:23 +0x24
+created by os/signal.init.0
+	/usr/lib/go-1.13/src/os/signal/signal_unix.go:29 +0x43
+
+goroutine 9 [chan receive]:
+github.com/docker/cli/vendor/k8s.io/klog.(*loggingT).flushDaemon(0x5640b6f11fc0)
+	/build/docker.io-NgswvZ/docker.io-20.10.7/.gopath/src/github.com/docker/cli/vendor/k8s.io/klog/klog.go:1010 +0x8d
+created by github.com/docker/cli/vendor/k8s.io/klog.init.0
+	/build/docker.io-NgswvZ/docker.io-20.10.7/.gopath/src/github.com/docker/cli/vendor/k8s.io/klog/klog.go:411 +0xd8
+
+rax    0x0
+rbx    0x7fd263fff700
+rcx    0x7fd302c2b03b
+rdx    0x0
+rdi    0x2
+rsi    0x7fd263ffe840
+rbp    0x7fd263ffeb90
+rsp    0x7fd263ffe840
+r8     0x0
+r9     0x7fd263ffe840
+r10    0x8
+r11    0x246
+r12    0x5640b570ca6a
+r13    0x7fd263ffec50
+r14    0x5640b56c12f8
+r15    0x0
+rip    0x7fd302c2b03b
+rflags 0x246
+cs     0x33
+fs     0x0
+gs     0x0
+diff: /home/git/ostest/target/20373673/lab0-2022-03-19T14:09:10+08:00-j3kL4/dst/sh_test/hello_os.c_1: No such file or directory
+[31m[01m[ You have not passed bash exercise0.1(3) 1/2 ][0m
+runtime/cgo: pthread_create failed: Resource temporarily unavailable
+SIGABRT: abort
+PC=0x7f6ee596a03b m=10 sigcode=18446744073709551610
+
+goroutine 0 [idle]:
+runtime: unknown pc 0x7f6ee596a03b
+stack: frame={sp:0x7f6e33ffd840, fp:0x0} stack=[0x7f6e23ffe288,0x7f6e33ffde88)
+00007f6e33ffd740:  0000000002800000  00007f6e33ffdb90 
+00007f6e33ffd750:  00007f6e1bffefc0  00007f6ee5b64187 
+00007f6e33ffd760:  0000000000000005  0000000000000000 
+00007f6e33ffd770:  0000000000000000  00007f6ee5931628 
+00007f6e33ffd780:  00007f6e33ffd9d0  00007f6ee5b6baa7 
+00007f6e33ffd790:  0000000000000000  0000000000000001 
+00007f6e33ffd7a0:  0000000000000000  0000000010001000 
+00007f6e33ffd7b0:  00007f6e0bfff000  0000000000000000 
+00007f6e33ffd7c0:  00007f6e1bfff700  0000000000000000 
+00007f6e33ffd7d0:  000000000000037f  0000000000000000 
+00007f6e33ffd7e0:  0000000000000000  0000ffff00001fa0 
+00007f6e33ffd7f0:  0000000000000000  0000000000000000 
+00007f6e33ffd800:  0000000000000000  0000000000000000 
+00007f6e33ffd810:  0000000000000000  0000000000000000 
+00007f6e33ffd820:  0000000000000000  0000000000000000 
+00007f6e33ffd830:  0000000000000000  0000000000000000 
+00007f6e33ffd840: <0000000000000000  0000000000000000 
+00007f6e33ffd850:  0000000000000000  0000000000000000 
+00007f6e33ffd860:  0000000000000000  0000000000000000 
+00007f6e33ffd870:  00007f6e1bfff9e0  00007f6e1bfff9e0 
+00007f6e33ffd880:  0000000000000000  0000000000000000 
+00007f6e33ffd890:  41273f0800000000  0000000000000000 
+00007f6e33ffd8a0:  0000000000000000  0000000000000000 
+00007f6e33ffd8b0:  0000000000000000  0000000000000000 
+00007f6e33ffd8c0:  fffffffe7fffffff  ffffffffffffffff 
+00007f6e33ffd8d0:  ffffffffffffffff  ffffffffffffffff 
+00007f6e33ffd8e0:  ffffffffffffffff  ffffffffffffffff 
+00007f6e33ffd8f0:  ffffffffffffffff  ffffffffffffffff 
+00007f6e33ffd900:  ffffffffffffffff  ffffffffffffffff 
+00007f6e33ffd910:  ffffffffffffffff  ffffffffffffffff 
+00007f6e33ffd920:  ffffffffffffffff  ffffffffffffffff 
+00007f6e33ffd930:  ffffffffffffffff  ffffffffffffffff 
+runtime: unknown pc 0x7f6ee596a03b
+stack: frame={sp:0x7f6e33ffd840, fp:0x0} stack=[0x7f6e23ffe288,0x7f6e33ffde88)
+00007f6e33ffd740:  0000000002800000  00007f6e33ffdb90 
+00007f6e33ffd750:  00007f6e1bffefc0  00007f6ee5b64187 
+00007f6e33ffd760:  0000000000000005  0000000000000000 
+00007f6e33ffd770:  0000000000000000  00007f6ee5931628 
+00007f6e33ffd780:  00007f6e33ffd9d0  00007f6ee5b6baa7 
+00007f6e33ffd790:  0000000000000000  0000000000000001 
+00007f6e33ffd7a0:  0000000000000000  0000000010001000 
+00007f6e33ffd7b0:  00007f6e0bfff000  0000000000000000 
+00007f6e33ffd7c0:  00007f6e1bfff700  0000000000000000 
+00007f6e33ffd7d0:  000000000000037f  0000000000000000 
+00007f6e33ffd7e0:  0000000000000000  0000ffff00001fa0 
+00007f6e33ffd7f0:  0000000000000000  0000000000000000 
+00007f6e33ffd800:  0000000000000000  0000000000000000 
+00007f6e33ffd810:  0000000000000000  0000000000000000 
+00007f6e33ffd820:  0000000000000000  0000000000000000 
+00007f6e33ffd830:  0000000000000000  0000000000000000 
+00007f6e33ffd840: <0000000000000000  0000000000000000 
+00007f6e33ffd850:  0000000000000000  0000000000000000 
+00007f6e33ffd860:  0000000000000000  0000000000000000 
+00007f6e33ffd870:  00007f6e1bfff9e0  00007f6e1bfff9e0 
+00007f6e33ffd880:  0000000000000000  0000000000000000 
+00007f6e33ffd890:  41273f0800000000  0000000000000000 
+00007f6e33ffd8a0:  0000000000000000  0000000000000000 
+00007f6e33ffd8b0:  0000000000000000  0000000000000000 
+00007f6e33ffd8c0:  fffffffe7fffffff  ffffffffffffffff 
+00007f6e33ffd8d0:  ffffffffffffffff  ffffffffffffffff 
+00007f6e33ffd8e0:  ffffffffffffffff  ffffffffffffffff 
+00007f6e33ffd8f0:  ffffffffffffffff  ffffffffffffffff 
+00007f6e33ffd900:  ffffffffffffffff  ffffffffffffffff 
+00007f6e33ffd910:  ffffffffffffffff  ffffffffffffffff 
+00007f6e33ffd920:  ffffffffffffffff  ffffffffffffffff 
+00007f6e33ffd930:  ffffffffffffffff  ffffffffffffffff 
+
+goroutine 1 [semacquire, locked to thread]:
+github.com/docker/cli/vendor/k8s.io/apimachinery/pkg/runtime.(*Scheme).AddKnownTypeWithName(0xc0005fe000, 0x0, 0x0, 0x56042243f298, 0x2, 0x560422a4b773, 0xf, 0x560422ecee40, 0xc000606140)
+	/build/docker.io-NgswvZ/docker.io-20.10.7/.gopath/src/github.com/docker/cli/vendor/k8s.io/apimachinery/pkg/runtime/scheme.go:213 +0x556
+github.com/docker/cli/vendor/k8s.io/apimachinery/pkg/runtime.(*Scheme).AddKnownTypes(0xc0005fe000, 0x0, 0x0, 0x56042243f298, 0x2, 0xc00050bca8, 0x5, 0x5)
+	/build/docker.io-NgswvZ/docker.io-20.10.7/.gopath/src/github.com/docker/cli/vendor/k8s.io/apimachinery/pkg/runtime/scheme.go:180 +0x257
+github.com/docker/cli/vendor/k8s.io/apimachinery/pkg/runtime.(*Scheme).AddUnversionedTypes(0xc0005fe000, 0x0, 0x0, 0x56042243f298, 0x2, 0xc00050bca8, 0x5, 0x5)
+	/build/docker.io-NgswvZ/docker.io-20.10.7/.gopath/src/github.com/docker/cli/vendor/k8s.io/apimachinery/pkg/runtime/scheme.go:156 +0xe5
+github.com/docker/cli/vendor/k8s.io/apimachinery/pkg/apis/meta/v1.AddToGroupVersion(0xc0005fe000, 0x0, 0x0, 0x56042243f298, 0x2)
+	/build/docker.io-NgswvZ/docker.io-20.10.7/.gopath/src/github.com/docker/cli/vendor/k8s.io/apimachinery/pkg/apis/meta/v1/register.go:67 +0x6de
+github.com/docker/cli/vendor/k8s.io/client-go/plugin/pkg/client/auth/exec.init.0()
+	/build/docker.io-NgswvZ/docker.io-20.10.7/.gopath/src/github.com/docker/cli/vendor/k8s.io/client-go/plugin/pkg/client/auth/exec/exec.go:56 +0x50
+
+goroutine 21 [syscall]:
+os/signal.signal_recv(0x560420ecec86)
+	/usr/lib/go-1.13/src/runtime/sigqueue.go:147 +0x9e
+os/signal.loop()
+	/usr/lib/go-1.13/src/os/signal/signal_unix.go:23 +0x24
+created by os/signal.init.0
+	/usr/lib/go-1.13/src/os/signal/signal_unix.go:29 +0x43
+
+goroutine 22 [chan receive]:
+github.com/docker/cli/vendor/k8s.io/klog.(*loggingT).flushDaemon(0x560423f24fc0)
+	/build/docker.io-NgswvZ/docker.io-20.10.7/.gopath/src/github.com/docker/cli/vendor/k8s.io/klog/klog.go:1010 +0x8d
+created by github.com/docker/cli/vendor/k8s.io/klog.init.0
+	/build/docker.io-NgswvZ/docker.io-20.10.7/.gopath/src/github.com/docker/cli/vendor/k8s.io/klog/klog.go:411 +0xd8
+
+rax    0x0
+rbx    0x7f6e33ffe700
+rcx    0x7f6ee596a03b
+rdx    0x0
+rdi    0x2
+rsi    0x7f6e33ffd840
+rbp    0x7f6e33ffdb90
+rsp    0x7f6e33ffd840
+r8     0x0
+r9     0x7f6e33ffd840
+r10    0x8
+r11    0x246
+r12    0x56042271fa6a
+r13    0x7f6e33ffdc50
+r14    0x5604226d42f8
+r15    0x0
+rip    0x7f6ee596a03b
+rflags 0x246
+cs     0x33
+fs     0x0
+gs     0x0
+diff: /home/git/ostest/target/20373673/lab0-2022-03-19T14:09:10+08:00-j3kL4/dst/sh_test/hello_os.c_2: No such file or directory
+[31m[01m[ You have not passed bash exercise0.1(3) 2/2 ][0m
+[33m[01m[ (3)Start to test exercise0.1(2) ][0m
+runtime/cgo: pthread_create failed: Resource temporarily unavailable
+SIGABRT: abort
+PC=0x7fe3113c303b m=0 sigcode=18446744073709551610
+
+goroutine 0 [idle]:
+runtime: unknown pc 0x7fe3113c303b
+stack: frame={sp:0x7ffc5edaba20, fp:0x0} stack=[0x7ffc4edad260,0x7ffc5edac2a0)
+00007ffc5edab920:  0000000002800000  00007ffc5edabd70 
+00007ffc5edab930:  00007fe24fffcfc0  00007fe3115bd187 
+00007ffc5edab940:  0000000000000005  0000000000000000 
+00007ffc5edab950:  00005579ffe85d80  00007fe31138a628 
+00007ffc5edab960:  00007ffc5edabbb0  00007fe3115c4aa7 
+00007ffc5edab970:  0000000000000000  0000000000000001 
+00007ffc5edab980:  0000000000000000  0000000010001000 
+00007ffc5edab990:  00007fe23fffd000  0000000000000000 
+00007ffc5edab9a0:  00007fe24fffd700  0000000000e2e9a2 
+00007ffc5edab9b0:  000000000000037f  0000000000000000 
+00007ffc5edab9c0:  0000000000000000  0000ffff00001fa0 
+00007ffc5edab9d0:  0000000000000000  0000000000000000 
+00007ffc5edab9e0:  0000000000000000  0000000000000000 
+00007ffc5edab9f0:  0000000000000000  0000000000000000 
+00007ffc5edaba00:  0000000000000000  0000000000000000 
+00007ffc5edaba10:  0000000000000000  0000000000000000 
+00007ffc5edaba20: <0000000000000000  0000000000000000 
+00007ffc5edaba30:  0000000000000000  0000000000000000 
+00007ffc5edaba40:  0000000000000000  0000000000000000 
+00007ffc5edaba50:  00007fe24fffd9e0  00007fe24fffd9e0 
+00007ffc5edaba60:  0000000000000000  0000000000000000 
+00007ffc5edaba70:  412ecc9000000000  0000000000000000 
+00007ffc5edaba80:  0000000000000000  0000000000000000 
+00007ffc5edaba90:  000000c00021df87  000000c000000180 
+00007ffc5edabaa0:  fffffffe7fffffff  ffffffffffffffff 
+00007ffc5edabab0:  ffffffffffffffff  ffffffffffffffff 
+00007ffc5edabac0:  ffffffffffffffff  ffffffffffffffff 
+00007ffc5edabad0:  ffffffffffffffff  ffffffffffffffff 
+00007ffc5edabae0:  ffffffffffffffff  ffffffffffffffff 
+00007ffc5edabaf0:  ffffffffffffffff  ffffffffffffffff 
+00007ffc5edabb00:  ffffffffffffffff  ffffffffffffffff 
+00007ffc5edabb10:  ffffffffffffffff  ffffffffffffffff 
+runtime: unknown pc 0x7fe3113c303b
+stack: frame={sp:0x7ffc5edaba20, fp:0x0} stack=[0x7ffc4edad260,0x7ffc5edac2a0)
+00007ffc5edab920:  0000000002800000  00007ffc5edabd70 
+00007ffc5edab930:  00007fe24fffcfc0  00007fe3115bd187 
+00007ffc5edab940:  0000000000000005  0000000000000000 
+00007ffc5edab950:  00005579ffe85d80  00007fe31138a628 
+00007ffc5edab960:  00007ffc5edabbb0  00007fe3115c4aa7 
+00007ffc5edab970:  0000000000000000  0000000000000001 
+00007ffc5edab980:  0000000000000000  0000000010001000 
+00007ffc5edab990:  00007fe23fffd000  0000000000000000 
+00007ffc5edab9a0:  00007fe24fffd700  0000000000e2e9a2 
+00007ffc5edab9b0:  000000000000037f  0000000000000000 
+00007ffc5edab9c0:  0000000000000000  0000ffff00001fa0 
+00007ffc5edab9d0:  0000000000000000  0000000000000000 
+00007ffc5edab9e0:  0000000000000000  0000000000000000 
+00007ffc5edab9f0:  0000000000000000  0000000000000000 
+00007ffc5edaba00:  0000000000000000  0000000000000000 
+00007ffc5edaba10:  0000000000000000  0000000000000000 
+00007ffc5edaba20: <0000000000000000  0000000000000000 
+00007ffc5edaba30:  0000000000000000  0000000000000000 
+00007ffc5edaba40:  0000000000000000  0000000000000000 
+00007ffc5edaba50:  00007fe24fffd9e0  00007fe24fffd9e0 
+00007ffc5edaba60:  0000000000000000  0000000000000000 
+00007ffc5edaba70:  412ecc9000000000  0000000000000000 
+00007ffc5edaba80:  0000000000000000  0000000000000000 
+00007ffc5edaba90:  000000c00021df87  000000c000000180 
+00007ffc5edabaa0:  fffffffe7fffffff  ffffffffffffffff 
+00007ffc5edabab0:  ffffffffffffffff  ffffffffffffffff 
+00007ffc5edabac0:  ffffffffffffffff  ffffffffffffffff 
+00007ffc5edabad0:  ffffffffffffffff  ffffffffffffffff 
+00007ffc5edabae0:  ffffffffffffffff  ffffffffffffffff 
+00007ffc5edabaf0:  ffffffffffffffff  ffffffffffffffff 
+00007ffc5edabb00:  ffffffffffffffff  ffffffffffffffff 
+00007ffc5edabb10:  ffffffffffffffff  ffffffffffffffff 
+
+goroutine 1 [runnable, locked to thread]:
+reflect.(*rtype).Elem(0x5579ffbaf8e0, 0x19, 0x5579ff9f06c0)
+	/usr/lib/go-1.13/src/reflect/type.go:902 +0x14b
+github.com/docker/cli/vendor/github.com/modern-go/reflect2.loadGo17Types()
+	/build/docker.io-NgswvZ/docker.io-20.10.7/.gopath/src/github.com/docker/cli/vendor/github.com/modern-go/reflect2/type_map.go:73 +0x187
+github.com/docker/cli/vendor/github.com/modern-go/reflect2.init.0()
+	/build/docker.io-NgswvZ/docker.io-20.10.7/.gopath/src/github.com/docker/cli/vendor/github.com/modern-go/reflect2/type_map.go:28 +0x96
+
+goroutine 34 [syscall]:
+os/signal.signal_recv(0x5579fdce4c86)
+	/usr/lib/go-1.13/src/runtime/sigqueue.go:147 +0x9e
+os/signal.loop()
+	/usr/lib/go-1.13/src/os/signal/signal_unix.go:23 +0x24
+created by os/signal.init.0
+	/usr/lib/go-1.13/src/os/signal/signal_unix.go:29 +0x43
+
+goroutine 35 [chan receive]:
+github.com/docker/cli/vendor/k8s.io/klog.(*loggingT).flushDaemon(0x557a00d3afc0)
+	/build/docker.io-NgswvZ/docker.io-20.10.7/.gopath/src/github.com/docker/cli/vendor/k8s.io/klog/klog.go:1010 +0x8d
+created by github.com/docker/cli/vendor/k8s.io/klog.init.0
+	/build/docker.io-NgswvZ/docker.io-20.10.7/.gopath/src/github.com/docker/cli/vendor/k8s.io/klog/klog.go:411 +0xd8
+
+rax    0x0
+rbx    0x7fe31137d740
+rcx    0x7fe3113c303b
+rdx    0x0
+rdi    0x2
+rsi    0x7ffc5edaba20
+rbp    0x7ffc5edabd70
+rsp    0x7ffc5edaba20
+r8     0x0
+r9     0x7ffc5edaba20
+r10    0x8
+r11    0x246
+r12    0x5579ff535a6a
+r13    0x7ffc5edabe30
+r14    0x5579ff4ea2f8
+r15    0x0
+rip    0x7fe3113c303b
+rflags 0x246
+cs     0x33
+fs     0x0
+gs     0x0
+[31m[01m[ Can not find your palindrome, something wrong in your Makfeile.You have not passed exercise0.1(2) ][0m
+[33m[01m[ You got 11 (of 100) this time. Sat Mar 19 14:09:14 CST 2022 ][0m
+Autotest: End at Sat Mar 19 14:09:14 CST 2022
