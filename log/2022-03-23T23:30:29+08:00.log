@@ -1,0 +1,82 @@
+[33m[01m[05m[ You are changing the branch: lab1 ][0m
+Autotest: Begin at Wed Mar 23 23:30:29 CST 2022
+[32m[ readelf.c found ][0m
+rm -rf *.o
+rm -rf readelf
+gcc -I./ -c main.c
+gcc -I./ -c readelf.c
+gcc main.o readelf.o -o readelf
+[32m[ Compile success! readelf found. ][0m
+[35m[ PASSED:25 ][0m
+[35m[ TOTAL:25 ][0m
+[32m[ You have passed readelf testcase 1/2 ][0m
+[35m[ PASSED:24 ][0m
+[35m[ TOTAL:24 ][0m
+[32m[ You have passed readelf testcase 2/2 ][0m
+Begin build at Wed Mar 23 23:30:31 CST 2022
+Cleanning the project.................
+
+for d in boot drivers init lib ;	\
+	do					\
+		make --directory=$d clean; \
+	done; \
+rm -rf *.o *~ gxemul/vmlinux
+make[1]: Entering directory '/usr/src/workdir/boot'
+rm -rf *~ *.o
+make[1]: Leaving directory '/usr/src/workdir/boot'
+make[1]: Entering directory '/usr/src/workdir/drivers'
+for d in gxconsole; \
+	do				\
+		make --directory=$d clean; \
+	done
+make[2]: Entering directory '/usr/src/workdir/drivers/gxconsole'
+rm -rf *.o *~
+make[2]: Leaving directory '/usr/src/workdir/drivers/gxconsole'
+make[1]: Leaving directory '/usr/src/workdir/drivers'
+make[1]: Entering directory '/usr/src/workdir/init'
+rm -rf *~ *.o
+make[1]: Leaving directory '/usr/src/workdir/init'
+make[1]: Entering directory '/usr/src/workdir/lib'
+rm -rf *~ *.o
+make[1]: Leaving directory '/usr/src/workdir/lib'
+
+Building the project..................
+
+make --directory=boot
+make[1]: Entering directory '/usr/src/workdir/boot'
+/OSLAB/compiler/usr/bin/mips_4KC-gcc -O -G 0 -mno-abicalls -fno-builtin -Wa,-xgot -Wall -fPIC -march=r3000 -I../include/ -c start.S 
+make[1]: Leaving directory '/usr/src/workdir/boot'
+make --directory=drivers
+make[1]: Entering directory '/usr/src/workdir/drivers'
+make --directory=gxconsole
+make[2]: Entering directory '/usr/src/workdir/drivers/gxconsole'
+/OSLAB/compiler/usr/bin/mips_4KC-gcc -O -G 0 -mno-abicalls -fno-builtin -Wa,-xgot -Wall -fPIC -march=r3000   -c -o console.o console.c
+make[2]: Leaving directory '/usr/src/workdir/drivers/gxconsole'
+make[1]: Leaving directory '/usr/src/workdir/drivers'
+make --directory=init
+make[1]: Entering directory '/usr/src/workdir/init'
+/OSLAB/compiler/usr/bin/mips_4KC-gcc  -O -G 0 -mno-abicalls -fno-builtin -Wa,-xgot -Wall -fPIC -march=r3000 -I../include -c init.c
+/OSLAB/compiler/usr/bin/mips_4KC-gcc  -O -G 0 -mno-abicalls -fno-builtin -Wa,-xgot -Wall -fPIC -march=r3000 -I../include -c main.c
+make[1]: Leaving directory '/usr/src/workdir/init'
+make --directory=lib
+make[1]: Entering directory '/usr/src/workdir/lib'
+/OSLAB/compiler/usr/bin/mips_4KC-gcc -O -G 0 -mno-abicalls -fno-builtin -Wa,-xgot -Wall -fPIC -march=r3000 -I./ -I../ -I../include/ -c print.c
+print.c: In function 'lp_Print':
+print.c:55: warning: unused variable 'prec'
+print.c:89: warning: 'longFlag' is used uninitialized in this function
+print.c:94: warning: 'padc' is used uninitialized in this function
+print.c:94: warning: 'width' is used uninitialized in this function
+print.c:94: warning: 'ladjust' is used uninitialized in this function
+/OSLAB/compiler/usr/bin/mips_4KC-gcc -O -G 0 -mno-abicalls -fno-builtin -Wa,-xgot -Wall -fPIC -march=r3000 -I./ -I../ -I../include/ -c printf.c
+make[1]: Leaving directory '/usr/src/workdir/lib'
+/OSLAB/compiler/usr/bin/mips_4KC-ld -o gxemul/vmlinux -N -T tools/scse0_3.lds boot/start.o init/main.o init/init.o drivers/gxconsole/console.o lib/*.o
+boot/start.o: In function `_start':
+start.S:(.text+0x34): undefined reference to `mCONTEXT'
+start.S:(.text+0x3c): undefined reference to `mCONTEXT'
+make: *** [Makefile:34: vmlinux] Error 1
+Compile Error!
+
+End build at Wed Mar 23 23:30:33 CST 2022
+[31m[01m[ There is something wrong with your vmlinux. ][0m
+[33m[01m[ You got 40 (of 100) this time. Wed Mar 23 23:30:33 CST 2022 ][0m
+Autotest: End at Wed Mar 23 23:30:33 CST 2022
