@@ -37,7 +37,7 @@ LEAF(_start) /*LEAF is defined in asm.h and LEAF functions don't call other func
 	/* ans begin*/
 	li sp, 0x80400000
 	li t0, 0x80400000
-	sw t0, mCONTEXT
+	#sw t0, mCONTEXT
 	jal main
 
 	/*ans end*/
