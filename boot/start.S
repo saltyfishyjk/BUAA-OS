@@ -34,7 +34,13 @@ LEAF(_start) /*LEAF is defined in asm.h and LEAF functions don't call other func
 	  hint: you can reference the memory layout in the include/mmu.h.
 	  call main func.
 	*/
+	/* ans begin*/
+	li sp, 0x80400000
+	li t0, 0x80400000
+	sw to, mCONTEXT
+	jal main
 
+	/*ans end*/
 			
 loop:
 	j	loop
