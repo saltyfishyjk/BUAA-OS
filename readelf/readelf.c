@@ -81,19 +81,39 @@ int readelf(u_char *binary, int size)
 			int addrSt = 0;
 			int addrNow =0;
 			int rLast = 0;
+			int lArr[15];
+			int rArr[15];
 			for (Nr = 0;Nr < ph_entry_count;Nr++) {
 				phdr = (Elf32_Phdr *)(ptr_ph_table + Nr * ph_entry_size);
 				fileSizeArr[cnt] = phdr -> p_filesz;
 				memSizeArr[cnt] = phdr -> p_memsz;
-				cnt++;
+				//cnt++;
 				int l = phdr -> p_vaddr;
-				int r = l + phdr -> p_memsz - 1;
+				int r = l + phdr -> p_memsz;
+				//lArr[cnt] = l;
+				//rArr[cnt] = r;
+				//cnt++;
 				if (Nr == 0) {
 					rLast = r;
 					addrSt = l + ((r - l) / 4096) * 4096;
 					addrNow = addrSt;
 				} else {
-					if (l <= rLast) {
+					int i;
+					for (i = 0;i < cnt;i++) {
+						if (l <= rArr[i] && l >= lArr[i]) {
+							addrNow = lArr[i] + ((rArr[i] - lArr[i]) / 4096) * 4096;
+							printf("Overlay at page va : 0x%x\n",addrNow);
+							flag = 1;
+							return 0;
+						}
+						addrNow = lArr[i] + ((rArr[i] - lArr[i]) / 4096) * 4096;
+						if (l < addrNow + 4096) {
+							printf("Overlay at page va : 0x%x\n", addrNow);
+                        	flag = 1;
+                        	return 0;
+						}
+					}
+					/*if (l <= rLast) {
 						printf("Conflict at page va : 0x%x\n", addrNow);
 						flag = 2;
 						return 0;
@@ -104,8 +124,12 @@ int readelf(u_char *binary, int size)
 						return 0;
 					}
 					rLast = r;
-					addrNow = addrSt + ((r - addrSt) / 4096) * 4096;
+					addrNow = addrSt + ((r - addrSt) / 4096) * 4096;*/
+					
 				}
+				lArr[cnt] = l;
+				rArr[cnt] = r;
+				cnt++;
 			}
 			int i;
 			if (flag == 0) {
