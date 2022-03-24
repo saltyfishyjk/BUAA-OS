@@ -79,6 +79,7 @@ int readelf(u_char *binary, int size)
 			int fileSizeArr[15];
 			int memSizeArr[15]; 
 			int addrSt = 0;
+			int addrNow =0;
 			int rLast = 0;
 			for (Nr = 0;Nr < ph_entry_count;Nr++) {
 				phdr = (Elf32_Phdr *)(ptr_ph_table + Nr * ph_entry_size);
@@ -90,19 +91,20 @@ int readelf(u_char *binary, int size)
 				if (Nr == 0) {
 					rLast = r;
 					addrSt = l + ((r - l) / 4096) * 4096;
+					addrNow = addrSt;
 				} else {
 					if (l <= rLast) {
-						//printf("Conflict at page va : 0x%x\n", addrSt);
+						printf("Conflict at page va : 0x%x\n", addrSt);
 						flag = 2;
 						return 0;
 					}
-					if (l < addrSt + 4096) {
-						//printf("Overlay at page va : 0x%x\n", addrSt);
+					if (l < addrNow + 4096) {
+						printf("Overlay at page va : 0x%x\n", addrSt);
 						flag = 1;
 						return 0;
 					}
 					rLast = r;
-					addrSt = l + ((r - l) / 4096) * 4096;
+					addrNow = addrSt + ((r - addrSt) / 4096) * 4096;
 				}
 			}
 			int i;
