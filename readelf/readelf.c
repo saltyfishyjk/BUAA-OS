@@ -102,7 +102,7 @@ int readelf(u_char *binary, int size)
 					for (i = 0;i < cnt;i++) {
 						if (l <= rArr[i] && l >= lArr[i]) {
 							addrNow = lArr[i] + ((rArr[i] - lArr[i]) / 4096) * 4096;
-							printf("Overlay at page va : 0x%x\n",addrNow);
+							printf("Conflict at page va : 0x%x\n",addrNow);
 							flag = 1;
 							break;
 							return 0;
