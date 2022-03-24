@@ -92,12 +92,12 @@ int readelf(u_char *binary, int size)
 					addrSt = l + ((r - l) / 4096) * 4096;
 				} else {
 					if (l <= rLast) {
-						printf("Conflict at page va : 0x%x\n", addrSt);
+						//printf("Conflict at page va : 0x%x\n", addrSt);
 						flag = 2;
 						return 0;
 					}
 					if (l < addrSt + 4096) {
-						printf("Overlay at page va : 0x%x\n", addrSt);
+						//printf("Overlay at page va : 0x%x\n", addrSt);
 						flag = 1;
 						return 0;
 					}
