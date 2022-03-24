@@ -66,12 +66,58 @@ int readelf(u_char *binary, int size)
 			ptr_sh_table = binary + ehdr -> e_shoff;
 			sh_entry_count = ehdr -> e_shnum;
 			sh_entry_size = ehdr -> e_shentsize;
-		// for each section header, output section number and section addr.
-			for (Nr = 0; Nr < sh_entry_count; Nr++) {
-				shdr = (Elf32_Shdr *)(ptr_sh_table + Nr * sh_entry_size);
-				printf("%d:0x%x\n", Nr, shdr->sh_addr);
+			
+			u_char *ptr_ph_table = NULL;
+			ptr_ph_table = binary + ehdr -> e_phoff;
+			Elf32_Half ph_entry_count = ehdr -> e_phnum;
+			Elf32_Half ph_entry_size = ehdr -> e_phentsize;
+			Elf32_Phdr *phdr = NULL;
+			
+			// flag = 0 : normal ; flag = 1 : Overlay ; flag = 2 : Conflict
+			int flag = 0;
+			int cnt = 0;
+			int fileSizeArr[15];
+			int memSizeArr[15]; 
+			int addrSt = 0;
+			int rLast = 0;
+			for (Nr = 0;Nr < ph_entry_count;Nr++) {
+				phdr = (Elf32_Phdr *)(ptr_ph_table + Nr * ph_entry_size);
+				fileSizeArr[cnt] = phdr -> p_filesz;
+				memSizeArr[cnt] = phdr -> p_memsz;
+				cnt++;
+				int l = phdr -> p_vaddr;
+				int r = l + phdr -> p_memsz;
+				if (Nr == 0) {
+					rLast = r;
+					addrSt = l + ((r - l) / 4096) * 4096;
+				} else {
+					if (l <= rLast) {
+						printf("Conflict at page va : 0x%x\n", addrSt);
+						flag = 2;
+						return 0;
+					}
+					if (l < addrSt + 4096) {
+						printf("Overlay at page va : 0x%x\n", addrSt);
+						flag = 1;
+						return 0;
+					}
+					rLast = r;
+					addrSt = l + ((r - l) / 4096) * 4096;
+				}
 			}
-
+			int i;
+			if (flag == 0) {
+				for (i = 0;i < cnt;i++) {
+					printf("%d:0x%x,0x%x\n", i, fileSizeArr[i], memSizeArr[i]);
+				}
+			}
+		// for each section header, output section number and section addr.
+			//for (Nr = 0; Nr < sh_entry_count; Nr++) {
+			//	shdr = (Elf32_Shdr *)(ptr_sh_table + Nr * sh_entry_size);
+			//	printf("%d:0x%x\n", Nr, shdr->sh_addr);
+			//}
+		// lab1-1-Extra
+			
         // get section table addr, section header number and section header size.
 
         // for each section header, output section number and section addr. 
