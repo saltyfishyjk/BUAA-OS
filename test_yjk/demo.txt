@@ -4,6 +4,7 @@
 #define REVERSE_16(n_n) \
 	((((n_n)&0xff) << 8) | (((n_n) >> 8) & 0xff))
 
+
 uint32_t rvs_32(uint32_t* ptr) {
         u_char char1, char2, char3, char4;
         char1 = *((u_char*) ptr);
