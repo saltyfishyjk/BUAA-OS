@@ -89,14 +89,14 @@ int readelf(u_char *binary, int size)
 				memSizeArr[cnt] = phdr -> p_memsz;
 				//cnt++;
 				int l = phdr -> p_vaddr;
-				int r = l + phdr -> p_memsz - 1;
+				int r = l + phdr -> p_memsz;
 				//lArr[cnt] = l;
 				//rArr[cnt] = r;
 				//cnt++;
 				if (Nr == 0) {
-					rLast = r;
-					addrSt = l + ((r - l) / 4096) * 4096;
-					addrNow = addrSt;
+					//rLast = r;
+					//addrSt = l + ((r - l) / 4096) * 4096;
+					//addrNow = addrSt;
 				} else {
 					int i;
 					for (i = 0;i < cnt;i++) {
