@@ -104,12 +104,14 @@ int readelf(u_char *binary, int size)
 							addrNow = lArr[i] + ((rArr[i] - lArr[i]) / 4096) * 4096;
 							printf("Overlay at page va : 0x%x\n",addrNow);
 							flag = 1;
+							break;
 							return 0;
 						}
 						addrNow = lArr[i] + ((rArr[i] - lArr[i]) / 4096) * 4096;
 						if (l < addrNow + 4096) {
 							printf("Overlay at page va : 0x%x\n", addrNow);
                         	flag = 1;
+							break;
                         	return 0;
 						}
 					}
