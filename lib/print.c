@@ -119,7 +119,7 @@ lp_Print(void (*output)(void *, char *, int),
 		fmt++;
 		while (IsDigit(*fmt)) {
 			prec = prec * 10 + Ctod(*fmt);
-			cmt++;
+			fmt++;
 		}
 	} else {
 		prec = 6; // default
