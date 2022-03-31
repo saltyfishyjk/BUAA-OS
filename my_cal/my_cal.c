@@ -27,13 +27,29 @@ void _my_putchar(char ch);
 
 void my_cal() {
 	char c = _my_getchar();
+	char ansArr[105];
+	int ct = 0;
 	unsigned int a = 0;
 	unsigned int b = 0;
 	while (c != '\n') {
 		a = a * 10 + c - '0';
 		c = _my_getchar();
 	}
-	c = _my_getchar();
+	if (a == 0) {
+		_my_putchar('0');
+	} else {
+		while (a != 0) {
+			ansArr[ct++] = a % 2 + '0';
+			a /= 2;
+		}
+		//ansArr[ct++] = a % 2;
+		//a /= 2;
+	}
+	int i;
+	for (i = ct - 1;i >= 0;i--) {
+		_my_putchar(ansArr[i]);
+	}
+	/*c = _my_getchar();
 	while (c != '\n') {
 		b = b * 10 + c - '0';
 		c = _my_getchar();
@@ -51,5 +67,5 @@ void my_cal() {
 			d = d % e;
 			e = e / 10;
 		}
-	}
+	}*/
 }
