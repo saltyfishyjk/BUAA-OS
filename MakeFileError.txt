@@ -1,0 +1,20 @@
+make --directory=boot
+make[1]: Entering directory '/home/git/20373673/boot'
+make[1]: Nothing to be done for 'all'.
+make[1]: Leaving directory '/home/git/20373673/boot'
+make --directory=drivers
+make[1]: Entering directory '/home/git/20373673/drivers'
+make --directory=gxconsole
+make[2]: Entering directory '/home/git/20373673/drivers/gxconsole'
+make[2]: Nothing to be done for 'all'.
+make[2]: Leaving directory '/home/git/20373673/drivers/gxconsole'
+make[1]: Leaving directory '/home/git/20373673/drivers'
+make --directory=init
+make[1]: Entering directory '/home/git/20373673/init'
+make[1]: Nothing to be done for 'all'.
+make[1]: Leaving directory '/home/git/20373673/init'
+make --directory=lib
+make[1]: Entering directory '/home/git/20373673/lib'
+make[1]: Nothing to be done for 'all'.
+make[1]: Leaving directory '/home/git/20373673/lib'
+/OSLAB/compiler/usr/bin/mips_4KC-ld -o gxemul/vmlinux -N -T tools/scse0_3.lds boot/start.o init/main.o init/init.o drivers/gxconsole/console.o lib/*.o

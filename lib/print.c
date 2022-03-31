@@ -15,6 +15,13 @@
 #define		IsDigit(x)	( ((x) >= '0') && ((x) <= '9') )
 #define		Ctod(x)		( (x) - '0')
 
+/*define struct for lab1-2-exam*/
+typedef struct my_struct{
+	int size;
+	char c;
+	int array[1005];
+} s1;
+
 /* forward declaration */
 extern int PrintChar(char *, char, int, int);
 extern int PrintString(char *, char *, int, int);
@@ -57,7 +64,8 @@ lp_Print(void (*output)(void *, char *, int),
     char padc; // char used to fill extra position
 
     int length;
-
+	
+	s1 * addr;
     /*
         Exercise 1.5. Please fill in two parts in this file.
     */
@@ -142,7 +150,49 @@ lp_Print(void (*output)(void *, char *, int),
 	    length = PrintNum(buf, num, 2, 0, width, ladjust, padc, 0);
 	    OUTPUT(arg, buf, length);
 	    break;
-
+	/* add for lab1-2-exam*/
+	 case 'T':
+		addr = (s1*)va_arg(ap, s1*);
+		int size = addr->size;
+		char c = addr->c;
+		int* arr_int = addr->array;
+ 		/* print '{'*/
+		length = PrintChar(buf, '{', 1, 0);
+		OUTPUT(arg, buf, length);
+		/*print int size*/
+		negFlag = 0;
+		length = PrintNum(buf, size, 10, negFlag, width, ladjust, padc, 0);
+		OUTPUT(arg,buf,length);
+		/*print ','*/
+		length = PrintChar(buf, ',', 1, 0);
+		OUTPUT(arg, buf, length);
+		/*print char c*/
+		length = PrintChar(buf, c, width, ladjust);
+		OUTPUT(arg, buf, length);
+		/*print ','*/
+		length = PrintChar(buf, ',', 1, 0);
+		OUTPUT(arg, buf, length);
+		/*print array*/
+		int var_for = 0;
+		for (var_for = 0;var_for < size;var_for++) {
+			int x = arr_int[var_for];
+			negFlag = 0;
+			if (x < 0) {
+				x = -x;
+				negFlag = 1;
+			}
+			length = PrintNum(buf, x, 10, negFlag, width, ladjust, padc, 0);
+			OUTPUT(arg, buf, length);
+			
+			if (var_for != size - 1) {
+				length = PrintChar(buf, ',', 1, 0);
+				OUTPUT(arg, buf, length);
+			}
+		}
+		/* print '}' */
+		length = PrintChar(buf, '}', 1, 0);
+		OUTPUT(arg, buf, length);
+		break;
 	 case 'd':
 	 case 'D':
 	    if (longFlag) { 
