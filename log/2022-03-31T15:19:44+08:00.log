@@ -1,0 +1,38 @@
+[33m[01m[05m[ You are changing the branch: lab1-2-Extra ][0m
+Autotest: Begin at Thu Mar 31 15:19:44 CST 2022
+[32m[ All files exists. ][0m
+rm -rf *~ *.o
+/OSLAB/compiler/usr/bin/mips_4KC-gcc -O -G 0 -mno-abicalls -fno-builtin -Wa,-xgot -Wall -fPIC -march=r3000 -I../include/ -c my_driver.S
+/OSLAB/compiler/usr/bin/mips_4KC-gcc  -O -G 0 -mno-abicalls -fno-builtin -Wa,-xgot -Wall -fPIC -march=r3000 -I../include/ -c my_cal.c
+my_cal.c: In function 'my_cal':
+my_cal.c:32: error: missing terminating ' character
+my_cal.c:33: error: invalid lvalue in assignment
+my_cal.c:33: error: parse error before ';' token
+my_cal.c:31: warning: unused variable 'b'
+my_cal.c: At top level:
+my_cal.c:36: warning: type defaults to 'int' in declaration of 'c'
+my_cal.c:36: error: initializer element is not constant
+my_cal.c:36: warning: data definition has no type or storage class
+my_cal.c:37: error: parse error before 'while'
+my_cal.c:39: warning: type defaults to 'int' in declaration of 'c'
+my_cal.c:39: error: redefinition of 'c'
+my_cal.c:36: error: previous definition of 'c' was here
+my_cal.c:39: error: initializer element is not constant
+my_cal.c:39: warning: data definition has no type or storage class
+my_cal.c:40: error: parse error before '}' token
+my_cal.c:41: error: 'a' undeclared here (not in a function)
+my_cal.c:41: error: 'b' undeclared here (not in a function)
+my_cal.c:42: error: parse error before 'if'
+my_cal.c:51: warning: type defaults to 'int' in declaration of 'd'
+my_cal.c:51: error: redefinition of 'd'
+my_cal.c:41: error: previous definition of 'd' was here
+my_cal.c:51: error: 'e' undeclared here (not in a function)
+my_cal.c:51: warning: data definition has no type or storage class
+my_cal.c:52: warning: type defaults to 'int' in declaration of 'e'
+my_cal.c:52: error: initializer element is not constant
+my_cal.c:52: warning: data definition has no type or storage class
+my_cal.c:53: error: parse error before '}' token
+make: *** [Makefile:4: my_cal.o] Error 1
+[31m[01m[ Compile my_cal and my_driver failed. Step 1 failed. Exit now. ][0m
+[33m[01m[ You got 0 (of 100) this time. Thu Mar 31 15:19:46 CST 2022 ][0m
+Autotest: End at Thu Mar 31 15:19:46 CST 2022
