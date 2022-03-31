@@ -1,0 +1,12 @@
+[33m[01m[05m[ You are changing the branch: lab1-2-Extra ][0m
+Autotest: Begin at Thu Mar 31 15:01:35 CST 2022
+[32m[ All files exists. ][0m
+rm -rf *~ *.o
+/OSLAB/compiler/usr/bin/mips_4KC-gcc    -c -o my_driver.o my_driver.S
+my_driver.S:1:24: error: asm/regdef.h: No such file or directory
+my_driver.S:2:27: error: asm/cp0regdef.h: No such file or directory
+my_driver.S:3:21: error: asm/asm.h: No such file or directory
+make: *** [<builtin>: my_driver.o] Error 1
+[31m[01m[ Compile my_cal and my_driver failed. Step 1 failed. Exit now. ][0m
+[33m[01m[ You got 0 (of 100) this time. Thu Mar 31 15:01:37 CST 2022 ][0m
+Autotest: End at Thu Mar 31 15:01:37 CST 2022
