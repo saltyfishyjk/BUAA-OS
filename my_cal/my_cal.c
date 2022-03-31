@@ -27,8 +27,8 @@ void _my_putchar(char ch);
 
 void my_cal() {
 	char c = _my_getchar();
-	int a = 0;
-	int b = 0;
+	unsigned int a = 0;
+	unsigned int b = 0;
 	while (c != '\n') {
 		a = a * 10 + c - '0';
 		c = _my_getchar();
@@ -38,7 +38,7 @@ void my_cal() {
 		b = b * 10 + c - '0';
 		c = _my_getchar();
 	}
-	int d = a + b;
+	unsigned int d = a + b;
 	if (d == 0) { 
 		_my_putchar('0');
 	} else {
