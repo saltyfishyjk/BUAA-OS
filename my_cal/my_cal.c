@@ -29,7 +29,7 @@ void my_cal() {
 	char c = _my_getchar();
 	int a = 0;
 	int b = 0;
-	while (c != '\n) {
+	while (c != '\n') {
 		a = a * 10 + c - '0';
 		c = _my_getchar();
 	}
