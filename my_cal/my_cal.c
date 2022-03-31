@@ -35,7 +35,7 @@ void my_cal() {
 	}
 	c = _my_getchar();
 	while (c != '\n') {
-		b = b * 10- + c - '0';
+		b = b * 10 + c - '0';
 		c = _my_getchar();
 	}
 	int d = a + b;
