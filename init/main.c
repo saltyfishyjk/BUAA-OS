@@ -15,7 +15,8 @@
 int main()
 {
 	printf("main.c:\tmain is start ...\n");
-
+	//int a = 7363892;
+	//printf("%d", a);
 	mips_init();
 	panic("main is over is error!");
 
