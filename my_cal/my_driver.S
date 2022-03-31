@@ -8,7 +8,7 @@ LEAF(_my_getchar)
 		lb t1, 0(t0)
 		beq t1, zero, loop
 		nop
-	end_loop
+	end_loop:
 	sb t1, 0(t0)
 	
 	li t2, 13
@@ -17,10 +17,10 @@ LEAF(_my_getchar)
 	check_r:
 		li t2, 10
 		sb t2, 0(t0)
-	end_check_r
+	end_check_r:
 	
 	or v0, zero, t1
-	jr jra
+	jr ra
 END(_my_getchar)
 
 LEAF(_my_putchar)
