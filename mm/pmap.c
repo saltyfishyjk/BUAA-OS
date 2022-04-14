@@ -727,11 +727,13 @@ int buddy_alloc(u_int size, u_int *pa, u_char *pi)
 	int nPage = 8 * 1024; // total 8K pages
 	int ava = 1; // signal whether has area to alloc
 	for (i = 0;i < nPage;i += cnt) {
+		ava = 1;
 		int l = i;
 		int r = i + cnt;
 		//int ava = 1; // signale whether this area can be alloced
 		for (j = l;j < r;j++) {
 			if (buddyPage[j] != 0) {
+				//printf("buddyPage[%d] = %d\n", j, buddyPage[j]);
 				ava = 0;
 				break;
 			}
@@ -745,6 +747,8 @@ int buddy_alloc(u_int size, u_int *pa, u_char *pi)
 			flagWhole++;
 			break;
 		}
+		//printf("Need %d pages\n", cnt);
+		//printf("Not Find ava betwen Page %d and %d\n", l, r);
 	}
 	if (ava == 1) {
 		return 0;
