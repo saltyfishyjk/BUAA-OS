@@ -676,3 +676,91 @@ void pageout(int va, int context)
 	printf("pageout:\t@@@___0x%x___@@@  ins a page \n", va);
 }
 
+int buddyPage[9999] = {0};
+int flagWhole = 1;
+
+void buddy_init(void)
+{
+	int i;
+	for (i = 0;i <= 9000;i++) {
+		buddyPage[i] = 0; // signals not alloced
+	}
+}
+
+int pow2(int n)
+{
+	int i = 0;
+	int ans = 1;
+	while(n--) {
+		ans *= 2;
+	}
+	return ans;
+}
+
+int buddy_alloc(u_int size, u_int *pa, u_char *pi)
+{
+	int MAX = 4 * 1024 * 1024; // MAX = 4MB
+	if (size > MAX) {
+		return -1;
+	}
+	int cnt = 0;
+	int pageSize = 4 * 1024; // pageSize = 4KB
+	if (size <= pageSize) {
+		cnt = 1;
+	} else {
+		if (size % pageSize == 0) {
+			cnt = size / pageSize;
+		} else {
+			cnt = size / pageSize + 1;
+		}
+	}
+	int i = 0;
+	int tempPi = 0;
+	for (i = 0;i <= 10;i++) {
+		if (pow2(i) >= cnt) {
+			cnt = pow2(i);
+			tempPi = i;
+			break;
+		}
+	}
+	int j;
+	int nPage = 8 * 1024; // total 8K pages
+	int ava = 1; // signal whether has area to alloc
+	for (i = 0;i < nPage;i += cnt) {
+		int l = i;
+		int r = i + cnt;
+		//int ava = 1; // signale whether this area can be alloced
+		for (j = l;j < r;j++) {
+			if (buddyPage[j] != 0) {
+				ava = 0;
+				break;
+			}
+		}
+		if (ava == 1) {
+			*pa = 0x2000000 + (i) * pageSize;
+			*pi = tempPi;
+			for (j = l;j < r;j++) {
+				buddyPage[j] = flagWhole;
+			}
+			flagWhole++;
+			break;
+		}
+	}
+	if (ava == 1) {
+		return 0;
+	} else {
+		return -1;
+	}
+}	
+
+void buddy_free(u_int pa) 
+{
+	int id = pa - 0x2000000;
+	id = id / (4 * 1024);
+	int key = buddyPage[id];
+	int i = id;
+	while(buddyPage[i] == key) {
+		buddyPage[i] = 0;
+		i++;
+	}
+}
