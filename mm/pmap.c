@@ -279,7 +279,7 @@ int page_protect(struct Page *pp)
 	return status;
 }
 
-int pag_status_query(struct Page *pp) 
+int page_status_query(struct Page *pp) 
 {
 	int status = -1;
 	struct Page *page_i;
