@@ -17,7 +17,7 @@ struct Page *pages;
 static u_long freemem;
 
 static struct Page_list page_free_list;	/* Free list of physical pages */
-
+static struct Page_list page_protect_list; /* lab2-1-exam : Protected list of physical pages*/
 
 /* Exercise 2.1 */
 /* Overview:
@@ -191,7 +191,8 @@ void page_init(void)
 	/* Step 1: Initialize page_free_list. */
 	/* Hint: Use macro `LIST_INIT` defined in include/queue.h. */
 	LIST_INIT(&page_free_list);
-
+	/*lab2-1-exam init page_protect_list*/
+	LIST_INIT(&page_protect_list);
 	/* Step 2: Align `freemem` up to multiple of BY2PG. */
 	ROUND(freemem, BY2PG);
 
@@ -242,6 +243,65 @@ int page_alloc(struct Page **pp)
 	return 0;
 }
 
+int page_protect(struct Page *pp)
+{
+	struct Page *ppage_temp;
+	int status = 0;
+	int is_free = 0;
+	struct Page *page_i;
+	LIST_FOREACH(page_i, &page_free_list, pp_link) {
+		if (page_i == pp) {
+			is_free = 1;
+			ppage_temp = page_i;// LIST_FIRST(&page_i);
+			break;
+		}
+	}
+	if (is_free == 1) {
+		// this page can be protected
+		status = 0;
+		LIST_REMOVE(ppage_temp, pp_link);
+	} else {
+		//if (page_protect_list != NULL) {
+			/*TODO*/
+			LIST_FOREACH(page_i, &page_protect_list, pp_link) {
+				if (page_i == pp) {
+					status = -2;
+					break;
+				}
+			}
+			if (status != -2) {
+				status = -1;
+			}
+		//} else {
+		//	status = -1;
+		//}
+	}
+	return status;
+}
+
+int pag_status_query(struct Page *pp) 
+{
+	int status = -1;
+	struct Page *page_i;
+	LIST_FOREACH(page_i, &page_protect_list, pp_link) {
+		if (page_i == pp) {
+			status = 3;
+			break;
+		}
+	}
+	if (status != 3) {
+		LIST_FOREACH(page_i, &page_free_list, pp_link) {
+			if (page_i == pp) {
+				status = 2;
+				break;
+			}
+		}
+	}
+	if (status != 3 && status != 2) {
+		status = 1;
+	}
+	return status;
+}
 /* Exercise 2.5 */
 /*Overview:
   Release a page, mark it as free if it's `pp_ref` reaches 0.
