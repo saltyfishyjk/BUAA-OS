@@ -245,13 +245,16 @@ int page_alloc(struct Page **pp)
 
 int page_protect(struct Page *pp)
 {
+	//printf("enter page protect\n");
 	struct Page *ppage_temp;
-	int status = 0;
+	int status = -1;
 	int is_free = 0;
 	struct Page *page_i;
 	LIST_FOREACH(page_i, &page_free_list, pp_link) {
 		if (page_i == pp) {
+			//printf("FOUND specific Page\n");
 			is_free = 1;
+			LIST_REMOVE(page_i, pp_link);
 			ppage_temp = page_i;// LIST_FIRST(&page_i);
 			break;
 		}
@@ -261,11 +264,12 @@ int page_protect(struct Page *pp)
 		status = 0;
 		//LIST_REMOVE(ppage_temp, pp_link);
 		LIST_INSERT_HEAD(&page_protect_list, ppage_temp, pp_link);
-		LIST_REMOVE(ppage_temp, pp_link);
+		//LIST_REMOVE(ppage_temp, pp_link);
 	} else {
 		//if (page_protect_list != NULL) {
 			/*TODO*/
 			LIST_FOREACH(page_i, &page_protect_list, pp_link) {
+				//printf("there is a protected page\n");
 				if (page_i == pp) {
 					status = -2;
 					break;
