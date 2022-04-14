@@ -259,6 +259,8 @@ int page_protect(struct Page *pp)
 	if (is_free == 1) {
 		// this page can be protected
 		status = 0;
+		//LIST_REMOVE(ppage_temp, pp_link);
+		LIST_INSERT_HEAD(&page_protect_list, ppage_temp, pp_link);
 		LIST_REMOVE(ppage_temp, pp_link);
 	} else {
 		//if (page_protect_list != NULL) {
