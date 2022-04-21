@@ -18,7 +18,8 @@ static u_long freemem;
 
 static struct Page_list page_free_list;	/* Free list of physical pages */
 
-
+int vps[505][505] = {0};
+static int idMax = 0;
 /* Exercise 2.1 */
 /* Overview:
    Initialize basemem and npage.
@@ -199,11 +200,13 @@ void page_init(void)
 	 * filed to 1) */
 	for (now = pages; page2kva(now) < freemem; now++) {
 		now->pp_ref = 1;
+		now->id = -1;
 	}
 
 	/* Step 4: Mark the other memory as free. */
 	for (now =  &pages[PPN(PADDR(freemem))]; page2ppn(now) < npage; now++) {
 		now->pp_ref = 0;
+		now->id = -1;
 		LIST_INSERT_HEAD(&page_free_list, now, pp_link);
 	}
 }
@@ -360,6 +363,13 @@ int page_insert(Pde *pgdir, struct Page *pp, u_long va, u_int perm)
 	/* Step 3.2 Insert page and increment the pp_ref */
 	*pgtable_entry = page2pa(pp) | PERM;
 	pp->pp_ref++;	
+	if (pp->id == -1) {
+		pp->id = idMax;
+		idMax++;
+	}
+	vps[pp->id][(pp->pp_ref) - 1] = (va>>12);
+	//printf("id = %d\n", pp->id);
+	//printf("va = %x\n", va);
 	return 0;
 }
 
@@ -419,8 +429,19 @@ int inverted_page_lookup(Pde *pgdir, struct Page *pp, int vpn_buffer[])
 	//	return pp->pp_ref;
 	//}
 	int i;
-	int cnt = 0;
-	for (i = 0;i < 1024;i++) {
+	int cnt = pp->pp_ref;
+	for (i = 0;i < cnt;i++) {
+		vpn_buffer[i] = vps[pp->id][i];
+	//	printf("checking id %d  : Page :  %x\n", pp->id, vps[pp->id][i]);
+	}
+	//printf("idMax : %d \n", idMax);
+	for (i = 0;i < idMax;i++) {
+		int j;
+		for (j = 0;j < 5;j++) {
+	//		printf("Page id : %d content : %x\n", i, j);
+		}
+	}
+	/*for (i = 0;i < 1024;i++) {
 		Pde *pgdir_entryp = pgdir + i;
 		if ((*pgdir_entryp) & PTE_V) {
 			Pte *pgtable = KADDR(PTE_ADDR(*pgdir_entryp));
@@ -439,7 +460,7 @@ int inverted_page_lookup(Pde *pgdir, struct Page *pp, int vpn_buffer[])
 			//	vpn_buffer[cnt++] = pgtable;
 			//}
 		//}
-	}
+	}*/
 	//for (i = 0;i < cnt;i++) {
 	//	int j;
 	//	for (j = i + 1;j < cnt;j++) {
@@ -486,6 +507,23 @@ void page_remove(Pde *pgdir, u_long va)
 	/* Step 3: Update TLB. */
 	*pagetable_entry = 0;
 	tlb_invalidate(pgdir, va);
+	int i;
+	int flag = -1;
+	for (i = 0;i <= ppage->pp_ref;i++) {
+		if (vps[ppage->id][i] == (va >> 12)) {
+			flag = i;
+			//printf("Remove %x from Page %d\n", (va >> 12), ppage->id);
+			break;
+		}
+	}
+	for (i = 0;i <= ppage->pp_ref;i++) {
+		if (i >= flag) {
+			vps[ppage->id][i] = vps[ppage->id][i+1];
+		}
+	}
+	for (i = 0;i < ppage->pp_ref;i++) {
+		//printf("After remove, there's left : %x in Page : %d \n", vps[ppage->id][i], ppage->id);
+	}
 	return;
 }
 
