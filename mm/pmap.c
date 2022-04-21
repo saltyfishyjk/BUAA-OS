@@ -367,7 +367,26 @@ int page_insert(Pde *pgdir, struct Page *pp, u_long va, u_int perm)
 		pp->id = idMax;
 		idMax++;
 	}
-	vps[pp->id][(pp->pp_ref) - 1] = (va>>12);
+	int i;
+	if (pp->cnt == 0) {
+		vps[pp->id][0] = (va >>12);
+		pp->cnt = pp->cnt + 1;
+	}else {
+		int flag = 0;
+		for (i = 0;i < pp->cnt;i++) {
+			if (vps[pp->id][i] == (va >> 12)) {
+				flag = 1;
+				break;
+			}
+		}
+		if (flag != 1) {
+			vps[pp->id][pp->cnt] = (va>>12);
+			pp->cnt = pp->cnt + 1;
+		}
+	}	//pp->cnt = pp->cnt + 1;
+			
+
+	//vps[pp->id][(pp->pp_ref) - 1] = (va>>12);
 	//printf("id = %d\n", pp->id);
 	//printf("va = %x\n", va);
 	return 0;
@@ -429,18 +448,18 @@ int inverted_page_lookup(Pde *pgdir, struct Page *pp, int vpn_buffer[])
 	//	return pp->pp_ref;
 	//}
 	int i;
-	int cnt = pp->pp_ref;
+	int cnt = pp->cnt;
 	for (i = 0;i < cnt;i++) {
 		vpn_buffer[i] = vps[pp->id][i];
 	//	printf("checking id %d  : Page :  %x\n", pp->id, vps[pp->id][i]);
 	}
 	//printf("idMax : %d \n", idMax);
-	for (i = 0;i < idMax;i++) {
-		int j;
-		for (j = 0;j < 5;j++) {
+	//for (i = 0;i < idMax;i++) {
+	//	int j;
+	//	for (j = 0;j < 5;j++) {
 	//		printf("Page id : %d content : %x\n", i, j);
-		}
-	}
+	//	}
+	//}
 	/*for (i = 0;i < 1024;i++) {
 		Pde *pgdir_entryp = pgdir + i;
 		if ((*pgdir_entryp) & PTE_V) {
@@ -521,6 +540,7 @@ void page_remove(Pde *pgdir, u_long va)
 			vps[ppage->id][i] = vps[ppage->id][i+1];
 		}
 	}
+	ppage->cnt = ppage->cnt - 1;
 	for (i = 0;i < ppage->pp_ref;i++) {
 		//printf("After remove, there's left : %x in Page : %d \n", vps[ppage->id][i], ppage->id);
 	}
