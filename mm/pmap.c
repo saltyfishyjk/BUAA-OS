@@ -449,8 +449,10 @@ int inverted_page_lookup(Pde *pgdir, struct Page *pp, int vpn_buffer[])
 	//}
 	int i;
 	int cnt = pp->cnt;
+	int j = 0;
 	for (i = 0;i < cnt;i++) {
-		vpn_buffer[i] = vps[pp->id][i];
+		if(PTE_V)
+		vpn_buffer[j++] = vps[pp->id][i];
 	//	printf("checking id %d  : Page :  %x\n", pp->id, vps[pp->id][i]);
 	}
 	//printf("idMax : %d \n", idMax);
