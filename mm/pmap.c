@@ -480,14 +480,14 @@ int inverted_page_lookup(Pde *pgdir, struct Page *pp, int vpn_buffer[])
 			//}
 		//}
 	}*/
-	//for (i = 0;i < cnt;i++) {
-	//	int j;
-	//	for (j = i + 1;j < cnt;j++) {
-	//		if (vpn_buffer[i] > vpn_buffer[j]) {
-	//			swapInt(&vpn_buffer[i],&vpn_buffer[j]);
-	//		}
-	//	}
-	//} 
+	for (i = 0;i < cnt;i++) {
+		int j;
+		for (j = i + 1;j < cnt;j++) {
+			if (vpn_buffer[i] > vpn_buffer[j]) {
+				swapInt(&vpn_buffer[i],&vpn_buffer[j]);
+			}
+		}
+	} 
 	//qsort(vpn_buffer, cnt, sizeof(int), cmp);
 	return cnt;
 }
