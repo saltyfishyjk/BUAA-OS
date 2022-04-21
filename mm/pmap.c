@@ -452,7 +452,7 @@ int inverted_page_lookup(Pde *pgdir, struct Page *pp, int vpn_buffer[])
 	int j = 0;
 	for (i = 0;i < cnt;i++) {
 		int va = vps[pp->id][i] << 12;
-		Pde *pgdir_entry = pgdir + PDX(va);
+		Pde *pgdir_entryp = pgdir + PDX(va);
 		
 		
 		if((*pgdir_entryp) & PTE_V)
