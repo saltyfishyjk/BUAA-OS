@@ -396,6 +396,62 @@ struct Page *page_lookup(Pde *pgdir, u_long va, Pte **ppte)
 	return ppage;
 }
 
+void swapInt(int *a, int *b) {
+	if (*a > *b) {
+		int temp = *a;
+		*a = *b;
+		*b = temp;
+	}
+	return;
+}
+
+int cmp(const void *a, const void *b) {
+	int x = *(int *) a;
+	int y = *(int *) b;
+	return x - y;
+}
+
+int inverted_page_lookup(Pde *pgdir, struct Page *pp, int vpn_buffer[])
+{
+	if (pp->pp_ref == 0) {
+		return 0;
+	}// else {
+	//	return pp->pp_ref;
+	//}
+	int i;
+	int cnt = 0;
+	for (i = 0;i < 1024;i++) {
+		Pde *pgdir_entryp = pgdir + i;
+		if ((*pgdir_entryp) & PTE_V) {
+			Pte *pgtable = KADDR(PTE_ADDR(*pgdir_entryp));
+			
+			int j;
+			for (j = 0;j < 1024;j++) {
+				Pte *pgtable_entry = pgtable + j;
+				if (pa2page(*pgtable_entry) == pp) {
+					vpn_buffer[cnt++] = ((i << 22) + (j << 12)) >> 12;
+				}
+			}
+		}
+		//if ((*pgdir_entryp) & PTE_V) {
+			//Pte *pgtable = KADDR(PTE_ADDR(*pgdir_entryp));
+			//if (pa2page(*pgtable) == pp) {
+			//	vpn_buffer[cnt++] = pgtable;
+			//}
+		//}
+	}
+	for (i = 0;i < cnt;i++) {
+		int j;
+		for (j = i + 1;j < cnt;j++) {
+			if (vpn_buffer[i] > vpn_buffer[j]) {
+				swapInt(&vpn_buffer[i],&vpn_buffer[j]);
+			}
+		}
+	} 
+	//qsort(vpn_buffer, cnt, sizeof(int), cmp);
+	return cnt;
+}
+
 // Overview:
 // 	Decrease the `pp_ref` value of Page `*pp`, if `pp_ref` reaches to 0, free this page.
 void page_decref(struct Page *pp) {
