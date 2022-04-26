@@ -12,12 +12,15 @@ void mips_init()
 	mips_detect_memory();
 	mips_vm_init();
 	page_init();
-
+	
 	//physical_memory_manage_check();
-	page_check();
+    //page_check();
 
 	panic("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^");
-
+		
+	/* Test for burger*/
+	
+	
 	while (1);
 
 	panic("init.c:\tend of mips_init() reached!");

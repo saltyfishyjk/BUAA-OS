@@ -173,8 +173,14 @@ void mips_vm_init()
 	envs = (struct Env *)alloc(NENV * sizeof(struct Env), BY2PG, 1);
 	n = ROUND(NENV * sizeof(struct Env), BY2PG);
 	boot_map_segment(pgdir, UENVS, n, PADDR(envs), PTE_R);
-
+	Pde *  x = 0x5c1000;
+	//printf("we can print");
+	printf("x = %x\n", KADDR(x));
 	printf("pmap.c:\t mips vm init success\n");
+	
+	//int x = 0x5c1000;
+	//printf("x is here!!!!!!!!\n");
+	//printf("x address : %x \n", KADDR(x));
 }
 
 /* Exercise 2.3 */
