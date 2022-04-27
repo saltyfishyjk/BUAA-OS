@@ -294,7 +294,7 @@ static int load_icode_mapper(u_long va, u_int32_t sgsize,
 		if ((r = page_alloc(&p)) != 0) {
 			return r;
 		}
-		bcppy(bin, page2kva(p) + offset, MIN(bin_size, BY2PG - offset));
+		bcopy(bin, page2kva(p) + offset, MIN(bin_size, BY2PG - offset));
 		page_insert(env->env_pgdir, p, va, PTE_R);
 	}
     /* Step 1: load all content of bin into memory. */
