@@ -293,11 +293,21 @@ static int load_icode_mapper(u_long va, u_int32_t sgsize,
     /* Step 1: load all content of bin into memory. */
     for (i = 0; i < bin_size; i += BY2PG) {
         /* Hint: You should alloc a new page. */
+		if ((r = page_alloc(&p)) != 0) {
+			return r;
+		}
+		bcopy(bin + i, page2kva(p), MIN(bin_size - i, BY2PG));
+		page_insert(env->env_pgdir, p, va+i, PTE_R);
     }
     /* Step 2: alloc pages to reach `sgsize` when `bin_size` < `sgsize`.
      * hint: variable `i` has the value of `bin_size` now! */
     while (i < sgsize) {
-
+		if (r = (page_alloc(&p)) != 0) {
+			return r;
+		}
+		page_insert(env->env_pgdir, p, va + i, PTE_R);
+		i += BY2PG;
+	}
 
     }
     return 0;
