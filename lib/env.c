@@ -484,13 +484,17 @@ env_run(struct Env *e)
     /* Hint: if there is an environment running, 
      *   you should switch the context and save the registers. 
      *   You can imitate env_destroy() 's behaviors.*/
-
+	if (curenv) {
+		struct Trapframe *old = (struct Trapframe *)(TIMESTACK - sizeof(struct Trapframe));
+		bcopy(old, &(curenv->env_tf), sizeof(struct Trapframe));
+		curenv->env_tf.pc = curenv->env_tf.cp0_epc;
+	}
 
     /* Step 2: Set 'curenv' to the new environment. */
-
+	curenv = e;
 
     /* Step 3: Use lcontext() to switch to its address space. */
-
+	lcontext(curenv->env_pgdir);
 
     /* Step 4: Use env_pop_tf() to restore the environment's
      *   environment   registers and return to user mode.
@@ -498,7 +502,7 @@ env_run(struct Env *e)
      * Hint: You should use GET_ENV_ASID there. Think why?
      *   (read <see mips run linux>, page 135-144)
      */
-
+	env_pop_tf(&(curenv->env_tf), GET_ENV_ASID(curenv->env_id));
 }
 
 void env_check()
