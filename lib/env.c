@@ -146,7 +146,7 @@ env_init(void)
      * Choose the correct loop order to finish the insertion.
      * Make sure, after the insertion, the order of envs in the list
      *   should be the same as that in the envs array. */
-	for (i = NEV - 1;i >= 0;i--) {
+	for (i = NENV - 1;i >= 0;i--) {
 		envs[i].env_status = ENV_FREE;
 		LIST_INSERT_HEAD(&env_free_list, &envs[i], env_link);
 	}
