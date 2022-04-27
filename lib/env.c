@@ -289,7 +289,14 @@ static int load_icode_mapper(u_long va, u_int32_t sgsize,
     u_long i;
     int r;
     u_long offset = va - ROUNDDOWN(va, BY2PG);
-
+	
+	if (offset != 0) {
+		if ((r = page_alloc(&p)) != 0) {
+			return r;
+		}
+		bcppy(bin, page2kva(p) + offset, MIN(bin_size, BY2PG - offset));
+		page_insert(env->env_pgdir, p, va, PTE_R);
+	}
     /* Step 1: load all content of bin into memory. */
     for (i = 0; i < bin_size; i += BY2PG) {
         /* Hint: You should alloc a new page. */
