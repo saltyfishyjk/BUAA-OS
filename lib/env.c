@@ -309,7 +309,6 @@ static int load_icode_mapper(u_long va, u_int32_t sgsize,
 		i += BY2PG;
 	}
 
-    }
     return 0;
 }
 /* Overview:
@@ -340,11 +339,18 @@ load_icode(struct Env *e, u_char *binary, u_int size)
     u_long perm;
 
     /* Step 1: alloc a page. */
-
-
+	perm = PTE_R;
+	if ((r = page_alloc(&p)) != 0) {
+		return;
+	}
     /* Step 2: Use appropriate perm to set initial stack for new Env. */
     /* Hint: Should the user-stack be writable? */
-
+	if ((r = page_insert(e->env_pgdir, p, USTACKTOP - BY2PG, perm)) != 0) {
+return;
+	}
+	if ((r = load_elf(binary, size, &entry_point, e, load_icode_mapper)) != 0) {
+		return;
+	}
 
     /* Step 3: load the binary using elf loader. */
 
