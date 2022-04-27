@@ -289,16 +289,31 @@ static int load_icode_mapper(u_long va, u_int32_t sgsize,
     u_long i;
     int r;
     u_long offset = va - ROUNDDOWN(va, BY2PG);
-	
+	//int size;
 	if (offset != 0) {
 		if ((r = page_alloc(&p)) != 0) {
 			return r;
 		}
 		bcopy(bin, page2kva(p) + offset, MIN(bin_size, BY2PG - offset));
 		page_insert(env->env_pgdir, p, va, PTE_R);
-	}
+	}	
+	/*if (offset) {
+		p = page_lookup(env->env_pgdir, va + i, NULL);
+		if (p == 0) {
+			r = page_alloc(&p);
+			if (r != 0) {
+				return r;
+			}
+			page_insert(env->env_pgdir, p, va + i, PTE_R);
+		}
+		size = MIN(bin_size - i, BY2PG - offset);
+		bcopy((void*)bin, (void*)(page2kva(p) + offset), size);
+		i = i + size;
+	}*/
     /* Step 1: load all content of bin into memory. */
-    for (i = 0; i < bin_size; i += BY2PG) {
+    //for (i = 0; i < bin_size; i += BY2PG) {
+	for (i = offset ? MIN(bin_size, BY2PG - offset) : 0; i < bin_size; i += BY2PG) {
+
         /* Hint: You should alloc a new page. */
 		if ((r = page_alloc(&p)) != 0) {
 			return r;
