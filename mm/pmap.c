@@ -199,10 +199,14 @@ void page_init(void)
 	 * filed to 1) */
 	for (now = pages; page2kva(now) < freemem; now++) {
 		now->pp_ref = 1;
+
 	}
 
 	/* Step 4: Mark the other memory as free. */
 	for (now =  &pages[PPN(PADDR(freemem))]; page2ppn(now) < npage; now++) {
+		if (page2ppn(now) == PPN(TIMESTACK - BY2PG)) {
+			continue;
+		}
 		now->pp_ref = 0;
 		LIST_INSERT_HEAD(&page_free_list, now, pp_link);
 	}
