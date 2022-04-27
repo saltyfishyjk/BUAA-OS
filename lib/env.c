@@ -172,16 +172,19 @@ env_setup_vm(struct Env *e)
     /* Step 1: Allocate a page for the page directory
      *   using a function you completed in the lab2 and add its pp_ref.
      *   pgdir is the page directory of Env e, assign value for it. */
-    if (      ) {
+	r = page_alloc(&p);
+    if (r != 0) { // page_alloc return 0 if success
         panic("env_setup_vm - page alloc error\n");
         return r;
     }
-
-
+	p->pp_ref++;
+	pgdir = (Pde *)page2kva(p);
 
     /* Step 2: Zero pgdir's field before UTOP. */
 
-
+	for (i = 0;i < PDX(UTOP); i++) {
+		pgdir[i] = 0;
+	}
 
 
 
@@ -193,8 +196,14 @@ env_setup_vm(struct Env *e)
      *  See ./include/mmu.h for layout.
      *  Can you use boot_pgdir as a template?
      */
-
-
+	for (i = PDX(UTOP);i < PTE2PT; i++) {
+		if (i != PDX(VPT) && i != PDX(UVPT)) {
+			pgdir[i] = boot_pgdir[i];
+		}
+	}
+	
+	e->env_pgdir = pgdir;
+	e->env_cr3 = PADDR(pgdir);
     /* UVPT maps the env's own page table, with read-only permission.*/
     e->env_pgdir[PDX(UVPT)]  = e->env_cr3 | PTE_V;
     return 0;
