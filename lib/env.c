@@ -20,6 +20,11 @@ extern char *KERNEL_SP;
 
 static u_int asid_bitmap[2] = {0}; // 64
 
+/* alter for lab3-1-Extra */
+static int sig[10] = {0};
+static struct Env_list env_wait1_list;
+static struct Env_list env_wait2_list;
+/* alter for lab3-1-Extra finished*/
 
 /* Overview:
  *  This function is to allocate an unused ASID
@@ -251,7 +256,10 @@ env_alloc(struct Env **new, u_int parent_id)
 	e->env_status = ENV_RUNNABLE;
 	e->env_parent_id = parent_id;
 	e->env_runs = 0;
-
+	
+	/* alter for lab3-1-Extra */
+	e->status = 3;
+	/* alter for lab3-1-Extra finished */
     /* Step 4: Focus on initializing the sp register and cp0_status of env_tf field, located at this new Env. */
     e->env_tf.cp0_status = 0x10001004;
 	e->env_tf.regs[29] = USTACKTOP;
@@ -526,7 +534,91 @@ env_run(struct Env *e)
      */
 	env_pop_tf(&(curenv->env_tf), GET_ENV_ASID(curenv->env_id));
 }
+/* alter for lab3-1-Extra */
+void S_init(int s, int num) {
+	sig[s] = num;
+	LIST_INIT(&env_wait1_list);
+	LIST_INIT(&env_wait2_list);
+}
 
+int P(struct Env *e, int s) {
+	//printf("env_id = %d s = %d s left : %d \n", e->env_id, s, sig[s]);
+	if (e->wait1 == 1 || e->wait2 == 1) {
+		return -1;
+	}
+	if (sig[s] > 0) {
+		sig[s]--;
+		e->status = 2;
+		if (s == 1) {
+			e->has1 = 1;
+		} else {
+			e->has2 = 1;
+		}
+		return 0;
+	} else {
+		e->status = 1;
+		if (s == 1) { 
+			LIST_INSERT_TAIL(&env_wait1_list, e, env_link);
+			e->wait1 = 1;
+		} else {
+			LIST_INSERT_TAIL(&env_wait2_list, e, env_link);
+			e->wait2 = 1;
+		}
+		//return -1;
+	}
+	return 0;
+}
+
+int V(struct Env* e, int s) {
+	struct Env *eNow;
+	if (e->wait1 == 1 || e->wait2 == 1) {
+		return -1;
+	}
+	if (s == 1) {
+		if (LIST_EMPTY(&env_wait1_list)) { 
+			sig[s]++;
+		} else {
+			eNow = LIST_FIRST(&env_wait1_list);
+			eNow->status = 2;
+			eNow->wait1 = 0;
+			eNow->has1 = 1;
+			LIST_REMOVE(eNow, env_link);
+		}
+		e->has1 = 0;
+	} else {
+		if (LIST_EMPTY(&env_wait2_list)) {
+			sig[s]++;
+		} else {
+			eNow = LIST_FIRST(&env_wait2_list);
+			eNow->status = 2;
+			eNow->wait2 = 0;
+			eNow->has2 = 1;
+			LIST_REMOVE(eNow, env_link);
+		}
+		e->has2 = 0;
+	}
+	if (e->has1 == 1 || e->has2 == 1) {
+		e->status = 2;
+	} else if (e->wait1 == 1 || e->wait2 == 1) {
+		e->status = 1;
+	} else {
+		e->status = 3;
+	}
+	return 0;
+}
+
+int get_status(struct Env *e) {
+	return e->status;
+}
+
+int my_env_create() {
+	struct Env *e;
+	if (env_alloc(&e, 0) != 0) {
+		return -1;
+	}
+	return e->env_id;
+}
+/* alter for lab3-1-Extra finished*/
 void env_check()
 {
     struct Env *temp, *pe, *pe0, *pe1, *pe2;
