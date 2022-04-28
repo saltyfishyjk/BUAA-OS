@@ -263,6 +263,8 @@ env_alloc(struct Env **new, u_int parent_id)
 	e->has1 = 0;
 	e->wait2 = 0;
 	e->has2 = 0;
+	e->cnt1 = 0;
+	e->cnt2 = 0;
 	/* alter for lab3-1-Extra finished */
     /* Step 4: Focus on initializing the sp register and cp0_status of env_tf field, located at this new Env. */
     e->env_tf.cp0_status = 0x10001004;
@@ -554,8 +556,10 @@ int P(struct Env *e, int s) {
 		sig[s]--;
 		e->status = 2;
 		if (s == 1) {
+			e->cnt1 = e->cnt1 + 1;
 			e->has1 = 1;
 		} else {
+			e->cnt2 = e->cnt2 + 1;
 			e->has2 = 1;
 		}
 		return 0;
@@ -585,6 +589,7 @@ int V(struct Env* e, int s) {
 			eNow = LIST_FIRST(&env_wait1_list);
 			//eNow->status = 2;
 			eNow->wait1 = 0;
+			eNow->cnt1 = eNow->cnt1 + 1;
 			eNow->has1 = 1;
 			if (eNow->wait1 == 1 || eNow->wait2 == 1) {
 				eNow->status = 1;
@@ -595,7 +600,14 @@ int V(struct Env* e, int s) {
 			}
 			LIST_REMOVE(eNow, env_link);
 		}
-		e->has1 = 0;
+		e->cnt1 = e->cnt1 - 1;
+		if (e->cnt1 <= 0) {
+			e->cnt1 = 0;
+			e->has1 = 0;
+		} else {
+			e->has1 = 1;
+		}
+		//e->has1 = 0;
 	} else {
 		if (LIST_EMPTY(&env_wait2_list)) {
 			sig[s]++;
@@ -603,6 +615,7 @@ int V(struct Env* e, int s) {
 			eNow = LIST_FIRST(&env_wait2_list);
 			//eNow->status = 2;
 			eNow->wait2 = 0;
+			eNow->cnt2 = eNow->cnt2 + 1;
 			eNow->has2 = 1;
 			if (eNow->wait1 == 1 || eNow->wait2 == 1) {	
 				eNow->status = 1;
@@ -613,7 +626,14 @@ int V(struct Env* e, int s) {
 			}
 			LIST_REMOVE(eNow, env_link);
 		}
-		e->has2 = 0;
+		e->cnt2 = e->cnt2 - 1;
+		if (e->cnt2 <= 0) {
+			e->cnt2 = 0;
+			e->has2 = 0;
+		} else {
+			e->has2 = 1;
+		}
+		//e->has2 = 0;
 	}
 	if (e->wait1 == 1 || e->wait2 == 1) {
 		e->status = 1;

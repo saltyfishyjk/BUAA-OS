@@ -49,6 +49,8 @@ struct Env {
 	int has2;
 	int wait1;
 	int wait2;
+	int cnt1;
+	int cnt2;
 };
 
 LIST_HEAD(Env_list, Env);
