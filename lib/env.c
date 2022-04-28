@@ -20,6 +20,9 @@ extern char *KERNEL_SP;
 
 static u_int asid_bitmap[2] = {0}; // 64
 
+/* alter for lab3-1-exam*/
+static int sysAsid;
+/* alter for lab3-1-exam finished*/
 
 /* Overview:
  *  This function is to allocate an unused ASID
@@ -67,11 +70,72 @@ static void asid_free(u_int i) {
  *  return e's envid on success
  */
 u_int mkenvid(struct Env *e) {
-    u_int idx = e - envs;
-    u_int asid = asid_alloc();
-    return (asid << (1 + LOG2NENV)) | (1 << LOG2NENV) | idx;
+	/* alter for lab3-1*/
+    /*Hint: lower bits of envid hold e's position in the envs array. */
+    u_int idx = (u_int)e - (u_int)envs;
+    idx /= sizeof(struct Env);
+
+    /*Hint: avoid envid being zero. */
+    return (1 << (LOG2NENV)) | idx;  //LOG2NENV=10
+    //u_int idx = e - envs;
+    //u_int asid = asid_alloc();
+    //return (asid << (1 + LOG2NENV)) | (1 << LOG2NENV) | idx;
 }
 
+/* alter for lab3-1*/
+u_int exam_env_run(struct Env *e) {
+	u_int isSysAsidChanged = 0;
+	u_int env_asid = e->env_asid;
+	int hardAsid = env_asid & 0x3f;
+	int newHardAsid;
+	if ((env_asid>>6) == sysAsid) {
+		return 0;
+	} else {
+		int index = hardAsid >> 5;
+		int inner = hardAsid & 31;
+		if ((asid_bitmap[index] & (1 << inner)) == 0) {
+			// not alloced yet
+			e->env_asid = (sysAsid << 6) | hardAsid;
+			asid_bitmap[index] |= 1 << inner;
+		} else {
+			int hasAvaAsid = 0;
+			int i;
+			for (i = 0;i < 64;++i) {
+				int index = i >> 5;
+				int inner = i & 31;
+				if ((asid_bitmap[index] & (1 << inner)) == 0) {
+					asid_bitmap[index] |= 1 << inner;
+					hasAvaAsid = 1;
+					newHardAsid = i;
+					break;
+				}
+			}
+			if (hasAvaAsid == 1) {
+				e->env_asid = (sysAsid << 6) | newHardAsid;
+			} else {
+				sysAsid++;
+				isSysAsidChanged = 1;
+				int i;
+				for (i = 0;i < 64;i++) {
+					asid_free(i);
+				}
+				newHardAsid = asid_alloc();
+				e->env_asid = (sysAsid << 6) | newHardAsid;
+			}
+		//return isSysAsidChanged;
+		}
+	}
+	return isSysAsidChanged;
+}
+
+void exam_env_free(struct Env *e) {
+	int env_asid = e->env_asid;
+	if ((env_asid >> 6) == sysAsid) {
+		asid_free(env_asid | 0x3f);
+	}
+}	
+
+/* alter for lab3-1-exam finished*/
 /* Overview:
  *  Convert an envid to an env pointer.
  *  If envid is 0 , set *penv = curenv; otherwise set *penv = envs[ENVX(envid)];
@@ -133,10 +197,19 @@ int envid2env(u_int envid, struct Env **penv, int checkperm)
  *      LIST_INIT, LIST_INSERT_HEAD
  */
 /*** exercise 3.2 ***/
+/* alter for lab3-1*/
+//static int sysAsid;
 void
 env_init(void)
 {
     int i;
+	/* alter for lab3-1*/
+	sysAsid = 0x4;
+	int j;
+	for (j = 0;j < 64;j++) {
+		asid_free(j);
+	}
+	/* alter for lab3-1 finished*/
     /* Step 1: Initialize env_free_list. */
 	LIST_INIT(&env_free_list);
 	LIST_INIT(&env_sched_list[0]);
@@ -147,6 +220,8 @@ env_init(void)
      * Make sure, after the insertion, the order of envs in the list
      *   should be the same as that in the envs array. */
 	for (i = NENV - 1;i >= 0;i--) {
+		/* alter for lab3-1*/
+		envs[i].env_asid = 0;
 		envs[i].env_status = ENV_FREE;
 		LIST_INSERT_HEAD(&env_free_list, &envs[i], env_link);
 	}
