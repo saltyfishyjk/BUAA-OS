@@ -615,10 +615,10 @@ int V(struct Env* e, int s) {
 		}
 		e->has2 = 0;
 	}
-	if (e->has1 == 1 || e->has2 == 1) {
-		e->status = 2;
-	} else if (e->wait1 == 1 || e->wait2 == 1) {
+	if (e->wait1 == 1 || e->wait2 == 1) {
 		e->status = 1;
+	} else if (e->has1 == 1 || e->has2 == 1) {
+		e->status = 2;
 	} else {
 		e->status = 3;
 	}
