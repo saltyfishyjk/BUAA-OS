@@ -82,7 +82,7 @@ u_int mkenvid(struct Env *e) {
     //return (asid << (1 + LOG2NENV)) | (1 << LOG2NENV) | idx;
 }
 
-/* alter for lab3-1*/
+/* alter for lab3-1-exam*/
 u_int exam_env_run(struct Env *e) {
 	u_int isSysAsidChanged = 0;
 	u_int env_asid = e->env_asid;
@@ -131,7 +131,8 @@ u_int exam_env_run(struct Env *e) {
 void exam_env_free(struct Env *e) {
 	int env_asid = e->env_asid;
 	if ((env_asid >> 6) == sysAsid) {
-		asid_free(env_asid | 0x3f);
+		//printf("new free 6asid : %d\n", (env
+		asid_free(env_asid & 0x3f);
 	}
 }	
 
