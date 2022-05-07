@@ -367,7 +367,7 @@ load_icode(struct Env *e, u_char *binary, u_int size)
     /* Step 2: Use appropriate perm to set initial stack for new Env. */
     /* Hint: Should the user-stack be writable? */
 	if ((r = page_insert(e->env_pgdir, p, USTACKTOP - BY2PG, perm)) != 0) {
-return;
+		return;
 	}
 	if ((r = load_elf(binary, size, &entry_point, e, load_icode_mapper)) != 0) {
 		return;

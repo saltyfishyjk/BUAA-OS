@@ -129,7 +129,8 @@ void boot_map_segment(Pde *pgdir, u_long va, u_long size, u_long pa, int perm)
 
 	/* Step 1: Check if `size` is a multiple of BY2PG. */
 	size = ROUND(size, BY2PG);
-
+	/* test */
+	//printf("size = %x\n", size);
 	/* Step 2: Map virtual address space to physical address. */
 	/* Hint: Use `boot_pgdir_walk` to get the page table entry of virtual address `va`. */
 	for (i = 0;i < size;i += BY2PG) {
@@ -154,6 +155,7 @@ void mips_vm_init()
 
 	/* Step 1: Allocate a page for page directory(first level page table). */
 	pgdir = alloc(BY2PG, BY2PG, 1);
+	int test = 0;
 	printf("to memory %x for struct page directory.\n", freemem);
 	mCONTEXT = (int)pgdir;
 
@@ -163,17 +165,25 @@ void mips_vm_init()
 	 * for physical memory management. Then, map virtual address `UPAGES` to
 	 * physical address `pages` allocated before. In consideration of alignment,
 	 * you should round up the memory size before map. */
+	if (test == 1)
+		printf("freemem before alloc for pages is : %x \n", freemem);
 	pages = (struct Page *)alloc(npage * sizeof(struct Page), BY2PG, 1);
 	printf("to memory %x for struct Pages.\n", freemem);
 	n = ROUND(npage * sizeof(struct Page), BY2PG);
+	if (test == 1)
+		printf("Now is mapping pages, pgdir : %x to PA : %x with size : %x \n", pgdir, PADDR(pages), n);
 	boot_map_segment(pgdir, UPAGES, n, PADDR(pages), PTE_R);
-
+	if (test == 1)
+		printf("freemem after pages segment mapping is %x \n", freemem);
 	/* Step 3, Allocate proper size of physical memory for global array `envs`,
 	 * for process management. Then map the physical address to `UENVS`. */
 	envs = (struct Env *)alloc(NENV * sizeof(struct Env), BY2PG, 1);
 	n = ROUND(NENV * sizeof(struct Env), BY2PG);
+	if (test == 1)
+		printf("Now id mapping envs, pgdir : %x to PA : %x with size : %x \n", pgdir, PADDR(envs), n);
 	boot_map_segment(pgdir, UENVS, n, PADDR(envs), PTE_R);
-
+	if (test == 1)
+		printf("freemem after envs segment mapping is %x \n", freemem);
 	printf("pmap.c:\t mips vm init success\n");
 }
 
