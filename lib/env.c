@@ -289,7 +289,7 @@ static int load_icode_mapper(u_long va, u_int32_t sgsize,
     int r;
     u_long offset = va - ROUNDDOWN(va, BY2PG);
 	//int size;
-	if (offset != 0) {
+	if (offset != 0) { // va not align
 		if ((r = page_alloc(&p)) != 0) {
 			return r;
 		}
