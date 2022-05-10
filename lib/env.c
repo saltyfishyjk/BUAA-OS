@@ -285,51 +285,58 @@ static int load_icode_mapper(u_long va, u_int32_t sgsize,
 {
     struct Env *env = (struct Env *)user_data;
     struct Page *p = NULL;
-    u_long i;
+    u_long i = 0;
     int r;
     u_long offset = va - ROUNDDOWN(va, BY2PG);
-	//int size;
-	if (offset != 0) {
-		if ((r = page_alloc(&p)) != 0) {
-			return r;
-		}
-		bcopy(bin, page2kva(p) + offset, MIN(bin_size, BY2PG - offset));
-		page_insert(env->env_pgdir, p, va, PTE_R);
-	}	
-	/*if (offset) {
+	int size;
+	if (offset != 0) { // va not align
 		p = page_lookup(env->env_pgdir, va + i, NULL);
 		if (p == 0) {
-			r = page_alloc(&p);
-			if (r != 0) {
+			if ((r = page_alloc(&p)) != 0) {
 				return r;
 			}
 			page_insert(env->env_pgdir, p, va + i, PTE_R);
 		}
 		size = MIN(bin_size - i, BY2PG - offset);
-		bcopy((void*)bin, (void*)(page2kva(p) + offset), size);
+		bcopy((void *)bin,(void *)(page2kva(p) + offset), size);
 		i = i + size;
-	}*/
+	}	
     /* Step 1: load all content of bin into memory. */
-    //for (i = 0; i < bin_size; i += BY2PG) {
-	for (i = offset ? MIN(bin_size, BY2PG - offset) : 0; i < bin_size; i += BY2PG) {
-
+	//for (i = offset ? MIN(bin_size, BY2PG - offset) : 0; i < bin_size; i += BY2PG) {
         /* Hint: You should alloc a new page. */
+	while (i < bin_size) {
+		size = MIN(BY2PG, bin_size - i);
 		if ((r = page_alloc(&p)) != 0) {
 			return r;
 		}
-		bcopy(bin + i, page2kva(p), MIN(bin_size - i, BY2PG));
-		page_insert(env->env_pgdir, p, va+i, PTE_R);
+		page_insert(env->env_pgdir, p, va + i, PTE_R);
+		bcopy((void *)(bin + i), (void *)(page2kva(p)), size);
+		i += size;
     }
     /* Step 2: alloc pages to reach `sgsize` when `bin_size` < `sgsize`.
      * hint: variable `i` has the value of `bin_size` now! */
+	u_long bin_size_remain = (va + i) - ROUNDDOWN(va + i, BY2PG);
+	if (bin_size_remain != 0) {
+		p = page_lookup(env->env_pgdir, va + i, NULL);
+		if (p == 0) {
+			if ((r = page_alloc(&p)) != 0) {
+				return r;
+			}
+			page_insert(env->env_pgdir, p, va + i, PTE_R);
+		}
+		size = MIN(sgsize - i, BY2PG - bin_size_remain);
+		bzero((void *)(page2kva(p) + bin_size_remain), size);
+		i += size;
+	}
     while (i < sgsize) {
+		size = MIN(BY2PG, sgsize - i);
 		if (r = (page_alloc(&p)) != 0) {
 			return r;
 		}
 		page_insert(env->env_pgdir, p, va + i, PTE_R);
-		i += BY2PG;
+		bzero((void *)(page2kva(p)), size);
+		i += size;
 	}
-
     return 0;
 }
 /* Overview:
@@ -367,7 +374,7 @@ load_icode(struct Env *e, u_char *binary, u_int size)
     /* Step 2: Use appropriate perm to set initial stack for new Env. */
     /* Hint: Should the user-stack be writable? */
 	if ((r = page_insert(e->env_pgdir, p, USTACKTOP - BY2PG, perm)) != 0) {
-return;
+		return;
 	}
 	if ((r = load_elf(binary, size, &entry_point, e, load_icode_mapper)) != 0) {
 		return;
