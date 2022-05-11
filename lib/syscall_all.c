@@ -201,7 +201,29 @@ int sys_mem_map(int sysno, u_int srcid, u_int srcva, u_int dstid, u_int dstva,
 	round_dstva = ROUNDDOWN(dstva, BY2PG);
 
     //your code here
-
+	/* check legal */
+	if ((perm & PTE_V) == 0 ||
+			!(round_srcva < UTOP) ||
+			!(round_dstva < UTOP)) {
+		return -E_INVAL;
+	}
+	
+	/* get legal env */
+	ret = envid2env(srcid, &srcenv, 0);
+	if (ret != 0) {
+		return ret;
+	}
+	ret = envid2env(dstid, &dstenv, 0);
+	if (ret != 0) {
+		return ret;
+	}
+	
+	ppage = page_lookup(srcenv->env_pgdir, round_srcva, &ppte);
+	if (ppage == NULL) {
+		return -1;
+	}
+	ret = page_insert(dstenv->env_pgdir, ppage, round_dstva, perm);
+	
 	return ret;
 }
 
