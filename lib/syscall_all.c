@@ -242,6 +242,16 @@ int sys_mem_unmap(int sysno, u_int envid, u_int va)
 	// Your code here.
 	int ret;
 	struct Env *env;
+	
+	ret = 0; // default return value
+	if (!(va < UTOP)) {
+		return -E_INVAL;
+	}
+	ret = envid2env(envid, &env, 0);
+	if (ret != 0) {
+		return ret;
+	}
+	page_remove(env->env_pgdir, va);
 
 	return ret;
 	//	panic("sys_mem_unmap not implemented");
