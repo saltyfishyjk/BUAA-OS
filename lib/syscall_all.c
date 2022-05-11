@@ -358,6 +358,10 @@ void sys_panic(int sysno, char *msg)
 /*** exercise 4.7 ***/
 void sys_ipc_recv(int sysno, u_int dstva)
 {
+	curenv->env_ipc_recving = 1;
+	curenv->env_ipc_dstva = dstva;
+	curenv->env_status = ENV_NOT_RUNNABLE;
+	sys_yield();
 }
 
 /* Overview:
@@ -385,6 +389,34 @@ int sys_ipc_can_send(int sysno, u_int envid, u_int value, u_int srcva,
 	int r;
 	struct Env *e;
 	struct Page *p;
-
+	
+	if (!(srcva < UTOP)) {
+		return -E_INVAL;
+	}
+	r = envid2env(envid, &e, 0);
+	if (r != 0) {
+		return r;
+	}
+	if (e->env_ipc_recving != 1) {
+		return -E_IPC_NOT_RECV;
+	}
+	e->env_ipc_recving = 0;
+	e->env_ipc_from = curenv->env_id; // TODO doubt : why not envid alone
+	e->env_ipc_value = value;
+	if (srcva != 0) {
+		/* flags that need to pass a page */
+		p = page_lookup(curenv->env_id, srcva, NULL);
+		if (p == NULL || 
+				!(e->env_ipc_dstva < UTOP)) {
+			return -1;
+		}
+		r = page_insert(e->env_ipc_dstva, p, e->env_ipc_dstva, perm);
+		if (r != 0) {
+			return r;
+		}
+	}
+	e->env_ipc_perm = perm;
+	e->env_status = ENV_RUNNABLE;
+	
 	return 0;
 }
