@@ -147,7 +147,7 @@ int sys_mem_alloc(int sysno, u_int envid, u_int va, u_int perm)
 			!(va < UTOP) ) {
 		return -E_INVAL;
 	}
-	ret = page_clloc(&ppage);
+	ret = page_alloc(&ppage);
 	if (ret != 0) {
 		/* no free phycisal page */
 		return ret; // return ERROR CODE
