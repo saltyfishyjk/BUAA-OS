@@ -141,8 +141,33 @@ int sys_mem_alloc(int sysno, u_int envid, u_int va, u_int perm)
 	// Your code here.
 	struct Env *env;
 	struct Page *ppage;
-	int ret;
-	ret = 0;
+	int ret = 0; // return value
+	if ( (perm & PTE_V) == 0 ||
+			(perm & PTE_COW) ||
+			!(va < UTOP) ) {
+		return -E_INVAL;
+	}
+	ret = page_clloc(&ppage);
+	if (ret != 0) {
+		/* no free phycisal page */
+		return ret; // return ERROR CODE
+	}
+	ret = envid2env(envid, &env, 1);
+	if (ret != 0) {
+		/* sometihng wrong happened */
+		return ret;
+	}
+	/* when page_insert, it unmapped physical page the va mapping now if exists */
+	ret = page_insert(env->env_pgdir, ppage, va, perm);
+	if (ret != 0) {
+		/* something wrong happened */
+		return ret;
+	}
+	return ret;	
+	//struct Env *env;
+	//struct Page *ppage;
+	//int ret;
+	//ret = 0;
 
 }
 
