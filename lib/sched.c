@@ -54,8 +54,9 @@ void sched_yield(void)
              if (e->env_status == ENV_FREE) {
                  LIST_REMOVE(e, env_sched_link);
              } else if (e->env_status == ENV_NOT_RUNNABLE) {
-                 //LIST_REMOVE(e, env_sched_link);
-                 //LIST_INSERT_TAIL(&env_sched_list[1 - point], e, env_sched_link);
+                 LIST_REMOVE(e, env_sched_link);
+				 int next = (point + 1) % 3;
+                 LIST_INSERT_TAIL(&env_sched_list[next], e, env_sched_link);
              } else {
 				 if (point == 0) {
 					 count = e->env_pri;
