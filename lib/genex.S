@@ -153,19 +153,22 @@ nop
 END(do_refill)
 
 /* alter for lab3-2-Extra */
+.extern tlbra
+.set noreorder
+
 NESTED(deal_adel, 0, sp)
 	//SAVE_ALL
 	//CLI
 	//mfc0 t0, CP0_EPC
 	.extern mCONTEXT
-1:
+//1:
 	nop
 	lw k1, mCONTEXT
 	and k1, 0xfffff000
 		mfc0 k0, CP0_BADVADDR
-		srl k0, 20
-		and k0, 0xfffffffc
-	addu k0, k1
+		#srl k0, 20
+		#and k0, 0xfffffffc
+	#addu k0, k1
 	lw k1, 0(k0)
 	
 	nop
