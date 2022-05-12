@@ -153,12 +153,23 @@ nop
 END(do_refill)
 
 /* alter for lab3-2-Extra */
-NESTED(deal_adel, TF_SIZE, sp)
+NESTED(deal_adel, 0, sp)
+	//SAVE_ALL
+	//CLI
+	//mfc0 t0, CP0_EPC
+	.extern mCONTEXT
 1:
 	nop
-	SAVE_ALL
-	CLI
-	mfc0 t0, CP0_EPC
+	lw k1, mCONTEXT
+	and k1, 0xfffff000
+		mfc0 k0, CP0_BADVADDR
+		srl k0, 20
+		and k0, 0xfffffffc
+	addu k0, k1
+	lw k1, 0(k0)
+	
+	nop
+	move t0, k1
 	srl t1, t0, 26
 	beq t1, 0b100011, isLw
 	beq t1, 0b100001, isLh
@@ -173,7 +184,9 @@ endIf:
 	srl t0, t0, 6
 	sll t1, t1, 26
 	or t0, t1, t1
-	mtc0 t0, CP0_EPC
+	sw t0, 0(k0)
+	jr ra
+	nop
 END(deal_adel)
 
 /* alter fot lab3-2-Extra finished */
