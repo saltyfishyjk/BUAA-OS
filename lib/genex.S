@@ -152,8 +152,33 @@ nop
 			nop
 END(do_refill)
 
+/* alter for lab3-2-Extra */
+NESTED(deal_adel, TF_SIZE, sp)
+1:
+	nop
+	SAVE_ALL
+	CLI
+	mfc0 t0, CP0_EPC
+	srl t1, t0, 26
+	beq t1, 0b100011, isLw
+	beq t1, 0b100001, isLh
+isLw:
+	andi t1, t1, 0b100001
+	j endIf
+isLh:
+	andi t1, t1, 0b100000
+	j endIf
+endIf:
+	sll t0, t0, 6
+	srl t0, t0, 6
+	sll t1, t1, 26
+	or t0, t1, t1
+	mtc0 t0, CP0_EPC
+END(deal_adel)
 
+/* alter fot lab3-2-Extra finished */
 
 BUILD_HANDLER reserved do_reserved cli
 BUILD_HANDLER tlb	do_refill	cli
 BUILD_HANDLER mod	page_fault_handler cli
+BUILD_HANDLER adel deal_adel cli
