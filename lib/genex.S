@@ -158,36 +158,33 @@ END(do_refill)
 
 NESTED(deal_adel, 0, sp)
 	//SAVE_ALL
-	//CLI
-	//mfc0 t0, CP0_EPC
-	//.extern mCONTEXT
-//1:
 	nop
-	lw k1, mCONTEXT
-	and k1, 0xfffff000
-		mfc0 k0, CP0_BADVADDR
-		#srl k0, 20
-		#and k0, 0xfffffffc
-	#addu k0, k1
-	lw k1, 0(k0)
+	mfc0 t4, CP0_EPC
+	lw t0, 0(t4)
 	
 	nop
-	move t0, k1
 	srl t1, t0, 26
-	beq t1, 0b100011, isLw
-	beq t1, 0b100001, isLh
+	ori t2, t2, 0b100011
+	ori t3, t3, 0b100001
+	beq t1, t2, isLw
+	beq t1, t3, isLh
 isLw:
-	andi t1, t1, 0b100001
+	and t1, t1, zero
+	ori t1, t1, 0b100001
 	j endIf
+	nop
 isLh:
-	andi t1, t1, 0b100000
+	and t1, t1, zero
+	ori t1, t1, 0b100000
 	j endIf
+	nop
 endIf:
 	sll t0, t0, 6
 	srl t0, t0, 6
 	sll t1, t1, 26
-	or t0, t1, t1
-	sw t0, 0(k0)
+	or t0, t0, t1
+
+	sw t0, 0(t4)
 	jr ra
 	nop
 END(deal_adel)
