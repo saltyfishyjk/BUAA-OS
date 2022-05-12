@@ -64,8 +64,9 @@ void sched_yield(void)
 				 } else {
 					 count = (e->env_pri) * 4;
                  //count = e->env_pri;
-                 break;
+                 //break;
 				 }
+				 break;
              }
          }
      }
