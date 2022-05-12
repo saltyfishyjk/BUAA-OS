@@ -72,7 +72,8 @@ void sched_yield(void)
      }
      count--;
      e->env_runs++;
+	 printf("\n");
 	// printf("\n%d\n",e->env_id);
      env_run(e);
-	 printf("\n");
+	// printf("\n");
 }
