@@ -280,7 +280,22 @@ int sys_env_alloc(void)
 	// Your code here.
 	int r;
 	struct Env *e;
+	
+	/* Step 1 alloc a new ENV */
+	
+	r = env_alloc(&e, curenv->env_id); // the second parementer is parent id
+	if (r != 0) { // fail when alloc for new ENV
+		return r;
+	}
 
+	/* Step 2 copy trapframe to son */
+	bcopy((void*)KERNEL_SP - sizeof(struct Trapframe), &e->env_tf, sizeof(struct Trapframe));
+	
+	/* Step 3 protect relevant information */
+	e->env_tf.pc = e->env_tf.cp0_epc; // set pc to epc
+	e->env_tf.regs[2] = 0; // set 0 as return value and only pass env_id to father
+	e->env_status = ENV_NOT_RUNNABLE;
+	e->env_pri = curenv->env_pri;
 
 	return e->env_id;
 	//	panic("sys_env_alloc not implemented");
