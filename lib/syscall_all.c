@@ -388,15 +388,15 @@ void sys_panic(int sysno, char *msg)
 /*** exercise 4.7 ***/
 void sys_ipc_recv(int sysno, u_int dstva)
 {	
-	int envx = ENVX(curenv);
+	u_int envx = ENVX(curenv->env_id);
 	if (ptLeft[envx] != ptRight[envx]) {
 		struct Env *eFrom;
 		int pt = ptLeft[envx];
-		envid2env(sendList[envx][pt], &envFrom, 0);
+		envid2env(sendList[envx][pt].from_env_id, &eFrom, 0);
 		u_int value = sendList[envx][pt].value;
 		u_int srcva = sendList[envx][pt].srcva;
 		u_int perm = sendList[envx][pt].perm;
-		send(curenv, envFrom, value, srcva, perm);
+		send(curenv, eFrom, value, srcva, perm);
 		return;
 	}
 	curenv->env_ipc_recving = 1;
