@@ -125,6 +125,11 @@ int	delete(const char *path);
 int	ftruncate(int fd, u_int size);
 int	sync(void);
 
+/* alter in lab4-1-exam */
+int syscall_try_acquire_console(void);
+int syscall_release_console(void);
+/* alter in lab4-1-exam finished */
+
 #define user_assert(x)	\
 	do {	if (!(x)) user_panic("assertion failed: %s", #x); } while (0)
 

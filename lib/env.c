@@ -20,6 +20,10 @@ extern char *KERNEL_SP;
 
 static u_int asid_bitmap[2] = {0}; // 64
 
+/* alter in lab4-1-exam */
+u_int lock_console = 0;
+int lock_free = 1;
+/* alter in lab4-1-exam finished*/
 
 /* Overview:
  *  This function is to allocate an unused ASID
