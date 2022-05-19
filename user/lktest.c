@@ -3,7 +3,7 @@
 #include <printf.h>
 void umain() {
     u_int me = syscall_getenvid();
-	printf("get in user process successfully\n");
+	//printf("get in user process successfully\n");
     while (syscall_try_acquire_console() != 0) {
         syscall_yield();
     }

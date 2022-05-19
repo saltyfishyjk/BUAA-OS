@@ -329,7 +329,7 @@ static int load_icode_mapper(u_long va, u_int32_t sgsize,
 			page_insert(env->env_pgdir, p, va + i, PTE_R);
 		}
 		size = MIN(sgsize - i, BY2PG - bin_size_remain);
-		bzero((void *)(page2kva(p) + bin_size_remain), size);
+		//bzero((void *)(page2kva(p) + bin_size_remain), size);
 		i += size;
 	}
     while (i < sgsize) {
@@ -338,7 +338,7 @@ static int load_icode_mapper(u_long va, u_int32_t sgsize,
 			return r;
 		}
 		page_insert(env->env_pgdir, p, va + i, PTE_R);
-		bzero((void *)(page2kva(p)), size);
+		//bzero((void *)(page2kva(p)), size);
 		i += size;
 	}
     return 0;
