@@ -294,8 +294,8 @@ int sys_env_alloc(void)
 	/* Step 3 protect relevant information */
 	e->env_tf.pc = e->env_tf.cp0_epc; // set pc to epc
 	e->env_tf.regs[2] = 0; // set 0 as return value and only pass env_id to father
-	e->env_status = ENV_NOT_RUNNABLE;
-	e->env_pri = curenv->env_pri;
+	e->env_status = ENV_NOT_RUNNABLE; // set son not ava to run
+	e->env_pri = curenv->env_pri; // extendd father's pri
 
 	return e->env_id;
 	//	panic("sys_env_alloc not implemented");
