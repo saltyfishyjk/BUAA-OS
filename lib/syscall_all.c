@@ -8,6 +8,21 @@
 extern char *KERNEL_SP;
 extern struct Env *curenv;
 
+/* alter in lab4-1-Extra */
+struct wait2sendList {
+	u_int from_env_id;
+	u_int to_env_id;
+	u_int value;
+	u_int srcva;
+	u_int perm;
+};
+
+static struct wait2sendList sendList[1025][55];
+static int ptLeft[1025] = {0};
+static int ptRight[1025] = {0};
+
+
+
 /* Overview:
  * 	This function is used to print a character on screen.
  *
@@ -372,7 +387,18 @@ void sys_panic(int sysno, char *msg)
  */
 /*** exercise 4.7 ***/
 void sys_ipc_recv(int sysno, u_int dstva)
-{
+{	
+	int envx = ENVX(curenv);
+	if (ptLeft[envx] != ptRight[envx]) {
+		struct Env *eFrom;
+		int pt = ptLeft[envx];
+		envid2env(sendList[envx][pt], &envFrom, 0);
+		u_int value = sendList[envx][pt].value;
+		u_int srcva = sendList[envx][pt].srcva;
+		u_int perm = sendList[envx][pt].perm;
+		send(curenv, envFrom, value, srcva, perm);
+		return;
+	}
 	curenv->env_ipc_recving = 1;
 	curenv->env_ipc_dstva = dstva;
 	curenv->env_status = ENV_NOT_RUNNABLE;
@@ -412,9 +438,28 @@ int sys_ipc_can_send(int sysno, u_int envid, u_int value, u_int srcva,
 	if (r != 0) {
 		return r;
 	}
-	if (e->env_ipc_recving != 1) {
+	/*if (e->env_ipc_recving != 1) {
 		return -E_IPC_NOT_RECV;
+	}*/
+
+	/* alter in lab4-1-Extra */
+	if (e->env_ipc_recving != 1) {
+		curenv->env_status = ENV_NOT_RUNNABLE;
+		u_int envx = ENVX(curenv->env_id);
+		//sendList[envx][ptRight[envx]] = {curenv->env_id. e->env_id, value, srcva, perm};
+		int ct = ptRight[envx];
+		sendList[envx][ct].from_env_id = curenv->env_id;
+		sendList[envx][ct].to_env_id = e->env_id;
+		sendList[envx][ct].value = value;
+		sendList[envx][ct].srcva = srcva;
+		sendList[envx][ct].perm = perm;
+		ptRight[envx] += 1;
+		sys_yield();
+		return 0;
 	}
+	/* alter in lab4-1-Extra finished */
+	
+	
 	e->env_ipc_recving = 0;
 	e->env_ipc_from = curenv->env_id; // TODO doubt : why not envid alone
 	e->env_ipc_value = value;
@@ -434,4 +479,28 @@ int sys_ipc_can_send(int sysno, u_int envid, u_int value, u_int srcva,
 	e->env_status = ENV_RUNNABLE;
 	
 	return 0;
+}
+
+void send(struct Env *e, struct Env *eFrom, u_int value, u_int srcva, u_int perm) {
+	int r;
+	struct Page *p;
+    e->env_ipc_recving = 0;
+    e->env_ipc_from = curenv->env_id; // TODO doubt : why not envid alone
+    e->env_ipc_value = value;
+    if (srcva != 0) {
+        /* flags that need to pass a page */
+        p = page_lookup(curenv->env_id, srcva, NULL);
+        if (p == NULL ||
+                !(e->env_ipc_dstva < UTOP)) {
+            return -1;
+        }
+        r = page_insert(e->env_ipc_dstva, p, e->env_ipc_dstva, perm);
+        if (r != 0) {
+            return r;
+        }
+    }
+    e->env_ipc_perm = perm;
+    e->env_status = ENV_RUNNABLE;
+
+    return 0;
 }
