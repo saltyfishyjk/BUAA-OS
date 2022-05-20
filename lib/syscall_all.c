@@ -420,12 +420,12 @@ int sys_ipc_can_send(int sysno, u_int envid, u_int value, u_int srcva,
 	e->env_ipc_value = value;
 	if (srcva != 0) {
 		/* flags that need to pass a page */
-		p = page_lookup(curenv->env_id, srcva, NULL);
+		p = page_lookup(curenv->env_pgdir, srcva, NULL);
 		if (p == NULL || 
 				!(e->env_ipc_dstva < UTOP)) {
 			return -1;
 		}
-		r = page_insert(e->env_ipc_dstva, p, e->env_ipc_dstva, perm);
+		r = page_insert(e->env_pgdir, p, e->env_ipc_dstva, perm);
 		if (r != 0) {
 			return r;
 		}
