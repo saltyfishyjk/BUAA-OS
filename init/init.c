@@ -5,7 +5,7 @@
 #include <kclock.h>
 #include <trap.h>
 
-void mips_init() {
+/*void mips_init() {
 	printf("init.c:\tmips_init() is called\n");
 	mips_detect_memory();
 
@@ -24,8 +24,8 @@ void mips_init() {
 
 	while(1);
 	panic("init.c:\tend of mips_init() reached!");
-}
-/*void mips_init() {
+}*/
+void mips_init() {
     printf("init.c:\tmips_init() is called\n");
     mips_detect_memory();
     mips_vm_init();
@@ -42,7 +42,7 @@ void mips_init() {
     kclock_init();
     while(1);
     panic("init.c:\tend of mips_init() reached!");
-}*/
+}
 
 void bcopy(const void *src, void *dst, size_t len) {
 	void *max = dst + len;

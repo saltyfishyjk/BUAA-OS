@@ -17,7 +17,7 @@ struct wait2sendList {
 	u_int perm;
 };
 
-static struct wait2sendList sendList[1025][55];
+static struct wait2sendList sendList[1025][55] = {0};
 static int ptLeft[1025] = {0};
 static int ptRight[1025] = {0};
 
@@ -387,16 +387,25 @@ void sys_panic(int sysno, char *msg)
  */
 /*** exercise 4.7 ***/
 void sys_ipc_recv(int sysno, u_int dstva)
-{	
+{
+	if (dstva > UTOP) {
+		return ;
+	}	
 	u_int envx = ENVX(curenv->env_id);
 	if (ptLeft[envx] != ptRight[envx]) {
 		struct Env *eFrom;
 		int pt = ptLeft[envx];
-		envid2env(sendList[envx][pt].from_env_id, &eFrom, 0);
+		int r = envid2env(sendList[envx][pt].from_env_id, &eFrom, 0);
+		if (r) return r;
 		u_int value = sendList[envx][pt].value;
 		u_int srcva = sendList[envx][pt].srcva;
 		u_int perm = sendList[envx][pt].perm;
+		curenv->env_ipc_dstva = dstva;
 		send(curenv, eFrom, value, srcva, perm);
+		//printf("RECV from %x to %x \n", eFrom->env_id, curenv->env_id);
+		ptLeft[envx] += 1;
+		eFrom->env_status = ENV_RUNNABLE;
+		curenv->env_ipc_recving = 0;
 		return;
 	}
 	curenv->env_ipc_recving = 1;
@@ -445,7 +454,7 @@ int sys_ipc_can_send(int sysno, u_int envid, u_int value, u_int srcva,
 	/* alter in lab4-1-Extra */
 	if (e->env_ipc_recving != 1) {
 		curenv->env_status = ENV_NOT_RUNNABLE;
-		u_int envx = ENVX(curenv->env_id);
+		u_int envx = ENVX(e->env_id);
 		//sendList[envx][ptRight[envx]] = {curenv->env_id. e->env_id, value, srcva, perm};
 		int ct = ptRight[envx];
 		sendList[envx][ct].from_env_id = curenv->env_id;
@@ -454,6 +463,7 @@ int sys_ipc_can_send(int sysno, u_int envid, u_int value, u_int srcva,
 		sendList[envx][ct].srcva = srcva;
 		sendList[envx][ct].perm = perm;
 		ptRight[envx] += 1;
+		//e->env_status = ENV_RUNNABLE;
 		sys_yield();
 		return 0;
 	}
@@ -465,7 +475,7 @@ int sys_ipc_can_send(int sysno, u_int envid, u_int value, u_int srcva,
 	e->env_ipc_value = value;
 	if (srcva != 0) {
 		/* flags that need to pass a page */
-		p = page_lookup(curenv->env_id, srcva, NULL);
+		p = page_lookup(curenv->env_pgdir, srcva, NULL);
 		if (p == NULL || 
 				!(e->env_ipc_dstva < UTOP)) {
 			return -1;
@@ -485,11 +495,11 @@ void send(struct Env *e, struct Env *eFrom, u_int value, u_int srcva, u_int perm
 	int r;
 	struct Page *p;
     e->env_ipc_recving = 0;
-    e->env_ipc_from = curenv->env_id; // TODO doubt : why not envid alone
+    e->env_ipc_from = eFrom->env_id; // TODO doubt : why not envid alone
     e->env_ipc_value = value;
     if (srcva != 0) {
         /* flags that need to pass a page */
-        p = page_lookup(curenv->env_id, srcva, NULL);
+        p = page_lookup(eFrom->env_pgdir, srcva, NULL);
         if (p == NULL ||
                 !(e->env_ipc_dstva < UTOP)) {
             return -1;
