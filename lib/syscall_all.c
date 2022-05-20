@@ -480,7 +480,7 @@ int sys_ipc_can_send(int sysno, u_int envid, u_int value, u_int srcva,
 				!(e->env_ipc_dstva < UTOP)) {
 			return -1;
 		}
-		r = page_insert(e->env_ipc_dstva, p, e->env_ipc_dstva, perm);
+		r = page_insert(e->env_pgdir, p, e->env_ipc_dstva, perm);
 		if (r != 0) {
 			return r;
 		}
@@ -504,7 +504,7 @@ void send(struct Env *e, struct Env *eFrom, u_int value, u_int srcva, u_int perm
                 !(e->env_ipc_dstva < UTOP)) {
             return -1;
         }
-        r = page_insert(e->env_ipc_dstva, p, e->env_ipc_dstva, perm);
+        r = page_insert(e->env_pgdir, p, e->env_ipc_dstva, perm);
         if (r != 0) {
             return r;
         }
