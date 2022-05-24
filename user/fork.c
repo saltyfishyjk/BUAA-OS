@@ -83,16 +83,31 @@ static void
 pgfault(u_int va)
 {
 	u_int *tmp;
+	u_long perm;
 	//	writef("fork.c:pgfault():\t va:%x\n",va);
-
+	
+	perm = (*vpt)[VPN(va)] & (BY2PG - 1);
+	if ((perm & PTE_COW) == 0) {
+		user_panic("`va` is not a copy-on-write page.");
+	}
+	perm -= PTE_COW;
+	tmp = USTACKTOP;
+	 
 	//map the new page at a temporary place
+	
+	syscall_mem_alloc(0, tmp, perm);
 
 	//copy the content
+	
+	user_bcopy(ROUNDDOWN(va, BY2PG), tmp, BY2PG);
 
 	//map the page on the appropriate place
+		
+	syscall_mem_map(0, tmp, 0, va, perm);
 
 	//unmap the temporary place
-
+	
+	syscall_mem_unmap(0, tmp);
 }
 
 /* Overview:
