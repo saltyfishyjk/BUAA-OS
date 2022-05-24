@@ -143,10 +143,22 @@ fork(void)
 
 
 	//The parent installs pgfault using set_pgfault_handler
-
+	set_pgfault_handler(pgfault);
 	//alloc a new alloc
-
-
+	newenvid = syscall_env_alloc();
+	if (newenvid) {
+		for (i = 0; i < VPN(USTACKTOP); i++) {
+			if (((*vpd)[i >> 10] & PTE_V) && ((*vpt)[i] & PTE_V)) {
+				duppage(newenvid, i);
+			}
+		}
+		syscall_mem_alloc(newenvid, USTACKTOP - BY2PG, PTE_V | PTE_R);
+		syscall_set_pgfault_handler(newenvid, __asm_pgfault_handler, UXSTACKTOP);
+		syscall_set_env_status(newenvid, ENV_RUNNABLE);
+	} else {
+		env = envs + ENVX(syscall_getenvid());
+	}
+	
 	return newenvid;
 }
 
