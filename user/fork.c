@@ -180,13 +180,17 @@ fork(void)
 	/* syscall_env_alloc return different values in parent process ans subprocess */
 	newenvid = syscall_env_alloc();
 	if (newenvid) {
+		/* copy address space for subprocess */
 		for (i = 0; i < VPN(USTACKTOP); i++) {
 			if (((*vpd)[i >> 10] & PTE_V) && ((*vpt)[i] & PTE_V)) {
 				duppage(newenvid, i);
 			}
 		}
+		/* alloc user exception stack for subprocess at UXSTACKTOP - BY2PG */
 		syscall_mem_alloc(newenvid, UXSTACKTOP - BY2PG, PTE_V | PTE_R);
+		/* set exception handler func for subprocess */
 		syscall_set_pgfault_handler(newenvid, __asm_pgfault_handler, UXSTACKTOP);
+		/* set subprocess as RUNNABLE */
 		syscall_set_env_status(newenvid, ENV_RUNNABLE);
 	} else { // in subprocess, just return
 		env = envs + ENVX(syscall_getenvid());

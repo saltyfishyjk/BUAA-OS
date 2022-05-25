@@ -14,9 +14,9 @@ void mips_init() {
 
 	env_init();
 
-	ENV_CREATE(user_tltest);
-	// ENV_CREATE(user_fktest);
-	// ENV_CREATE(user_pingpong);
+	//ENV_CREATE(user_tltest);
+	//ENV_CREATE(user_fktest);
+	ENV_CREATE(user_pingpong);
 
 	trap_init();
 	kclock_init();
