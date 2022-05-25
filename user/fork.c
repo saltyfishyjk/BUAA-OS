@@ -86,10 +86,13 @@ pgfault(u_int va)
 	u_long perm;
 	//	writef("fork.c:pgfault():\t va:%x\n",va);
 	
+	/* get bit 0-11 as perm bits */
 	perm = (*vpt)[VPN(va)] & (BY2PG - 1);
+	/* if the page has NOT PTE_COW perm, something might be wrond */
 	if ((perm & PTE_COW) == 0) {
 		user_panic("`va` is not a copy-on-write page.");
 	}
+	/* remove PTE_COW perm for when this func finished, we have two seperate pages which has no connection with each other */
 	perm -= PTE_COW;
 	tmp = USTACKTOP;
 	 
@@ -174,6 +177,7 @@ fork(void)
 	//The parent installs pgfault using set_pgfault_handler
 	set_pgfault_handler(pgfault);
 	//alloc a new alloc
+	/* syscall_env_alloc return different values in parent process ans subprocess */
 	newenvid = syscall_env_alloc();
 	if (newenvid) {
 		for (i = 0; i < VPN(USTACKTOP); i++) {
@@ -181,10 +185,10 @@ fork(void)
 				duppage(newenvid, i);
 			}
 		}
-		syscall_mem_alloc(newenvid, USTACKTOP - BY2PG, PTE_V | PTE_R);
+		syscall_mem_alloc(newenvid, UXSTACKTOP - BY2PG, PTE_V | PTE_R);
 		syscall_set_pgfault_handler(newenvid, __asm_pgfault_handler, UXSTACKTOP);
 		syscall_set_env_status(newenvid, ENV_RUNNABLE);
-	} else {
+	} else { // in subprocess, just return
 		env = envs + ENVX(syscall_getenvid());
 	}
 	
