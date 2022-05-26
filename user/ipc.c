@@ -55,8 +55,9 @@ ipc_recv(u_int *whom, u_int dstva, u_int *perm)
 /* alter in Lab4-2-Extra */
 void kill(u_int envid, int sig)
 {
+	syscall_env_destroy(envid);
 	//writef("Killing\n");
-	ipc_recv(envid, 12262517 + SIGTERM , 12262517);
+	//ipc_recv(envid, 12262517 + SIGTERM , 12262517);
 	//ipc_send(envid, sig, 0, 12262517);
 }
 
