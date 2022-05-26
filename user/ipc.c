@@ -37,7 +37,7 @@ ipc_recv(u_int *whom, u_int dstva, u_int *perm)
 {
 	//printf("ipc_recv:come 0\n");
 	if (perm == 12262517) {
-		
+		exit();
 	}
 	syscall_ipc_recv(dstva);
 
@@ -59,3 +59,6 @@ void kill(u_int envid, int sig)
 	ipc_send(envid, sig, 0, 12262517);
 }
 
+void signal(int sig, void(*handler)(int))
+{
+}
