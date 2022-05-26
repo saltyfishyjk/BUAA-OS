@@ -37,7 +37,7 @@ ipc_recv(u_int *whom, u_int dstva, u_int *perm)
 {
 	//printf("ipc_recv:come 0\n");
 	if (perm == 12262517) {
-		exit();
+		env->env_status = ENV_NOT_RUNNABLE;
 	}
 	syscall_ipc_recv(dstva);
 
@@ -56,7 +56,7 @@ ipc_recv(u_int *whom, u_int dstva, u_int *perm)
 void kill(u_int envid, int sig)
 {
 	ipc_recv(envid, 0, 12262517);
-	ipc_send(envid, sig, 0, 12262517);
+	//ipc_send(envid, sig, 0, 12262517);
 }
 
 void signal(int sig, void(*handler)(int))
