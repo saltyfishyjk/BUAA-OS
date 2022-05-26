@@ -3,7 +3,7 @@
 #include "lib.h"
 #include <mmu.h>
 #include <env.h>
-
+#include <printf.h>
 extern struct Env *env;
 
 // Send val to whom.  This function keeps trying until
@@ -36,9 +36,9 @@ u_int
 ipc_recv(u_int *whom, u_int dstva, u_int *perm)
 {
 	//printf("ipc_recv:come 0\n");
-	if (perm == 12262517) {
+	/*if (perm == 12262517) {
 		env->env_status = ENV_NOT_RUNNABLE;
-	}
+	}*/
 	syscall_ipc_recv(dstva);
 
 	if (whom) {
@@ -55,6 +55,7 @@ ipc_recv(u_int *whom, u_int dstva, u_int *perm)
 /* alter in Lab4-2-Extra */
 void kill(u_int envid, int sig)
 {
+	//writef("Killing\n");
 	ipc_recv(envid, 0, 12262517);
 	//ipc_send(envid, sig, 0, 12262517);
 }
