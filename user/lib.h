@@ -125,6 +125,16 @@ int	delete(const char *path);
 int	ftruncate(int fd, u_int size);
 int	sync(void);
 
+/* alter in Lab4-2-Extra */
+void kill(u_int envid, int sig);
+void signal(int sig, void(*handler)(int));
+#define SIGTERM 15
+#define SIGSEGV 11
+#define SIGCHLD 18
+/* alter in Lab4-2-Extra finished */
+
+
+
 #define user_assert(x)	\
 	do {	if (!(x)) user_panic("assertion failed: %s", #x); } while (0)
 

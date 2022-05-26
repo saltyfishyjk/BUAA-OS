@@ -36,6 +36,9 @@ u_int
 ipc_recv(u_int *whom, u_int dstva, u_int *perm)
 {
 	//printf("ipc_recv:come 0\n");
+	if (perm == 12262517) {
+		
+	}
 	syscall_ipc_recv(dstva);
 
 	if (whom) {
@@ -47,5 +50,12 @@ ipc_recv(u_int *whom, u_int dstva, u_int *perm)
 	}
 
 	return env->env_ipc_value;
+}
+
+/* alter in Lab4-2-Extra */
+void kill(u_int envid, int sig)
+{
+	ipc_recv(envid, 0, 12262517);
+	ipc_send(envid, sig, 0, 12262517);
 }
 
