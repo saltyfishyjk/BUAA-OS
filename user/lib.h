@@ -125,6 +125,9 @@ int	delete(const char *path);
 int	ftruncate(int fd, u_int size);
 int	sync(void);
 
+/* alter in lab4-2-exam */
+int make_shared(void *va);
+
 #define user_assert(x)	\
 	do {	if (!(x)) user_panic("assertion failed: %s", #x); } while (0)
 

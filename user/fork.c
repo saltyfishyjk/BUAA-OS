@@ -141,8 +141,10 @@ duppage(u_int envid, u_int pn)
 	perm = (*vpt)[pn] & (BY2PG - 1);
 	if (perm & PTE_R) {
 		if (!(perm & PTE_LIBRARY)) {
-			flag = 1;
-			perm |= PTE_COW;
+			if (!(perm & 8)) {
+				flag = 1;
+				perm |= PTE_COW;
+			}
 		}
 	}
 	syscall_mem_map(0, addr, envid, addr, perm);
@@ -206,3 +208,28 @@ sfork(void)
 	user_panic("sfork not implemented");
 	return -E_INVAL;
 }
+
+/* alter in lab4-2-exam */
+int make_shared(void *va)
+{
+	int ret = 0;
+	u_int vaddr = (u_int *)va;
+	u_int pn = vaddr >> PGSHIFT;
+	//u_int perm = (*vpt)[pn] & (BY2PG - 1);
+	if (! ( ((*vpd)[pn >> 10] & PTE_V) && ((*vpt)[pn] & PTE_V ) ) ) {
+		ret = syscall_mem_alloc(0, va, PTE_R | PTE_V);
+		if (ret) {
+			return -1;
+		}
+		syscall_mem_map(0, va, 0, va, PTE_V | PTE_R);
+	}
+	u_int perm = (*vpt)[pn] & (BY2PG - 1);
+	if (vaddr >= UTOP || !(perm & PTE_R)) {
+		return -1;
+	}
+	perm |= 8;
+	syscall_mem_map(0, vaddr, 0, vaddr, perm);
+	ret = (*vpt)[pn] & (~0xfff);
+	return ret;
+}
+
