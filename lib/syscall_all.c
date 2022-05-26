@@ -395,6 +395,8 @@ void sys_ipc_recv(int sysno, u_int dstva)
 {
 	if (dstva == 12262517 + 15) {
 		curenv->env_status = ENV_NOT_RUNNABLE;
+		sys_yield();
+		return;
 	}
 	curenv->env_ipc_recving = 1;
 	curenv->env_ipc_dstva = dstva;
