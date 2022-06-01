@@ -54,7 +54,7 @@ ide_read(u_int diskno, u_int secno, void *dst, u_int nsecs)
 		if (syscall_read_dev(&op_status, 0x13000030, 4) != 0) {
 			user_panic("write failed!\n");
 		}
-		if (op_status = 0) {
+		if (op_status == 0) {
 			user_panic("read failed!\n");
 		}
 		if (syscall_read_dev(dst + offset, 0x13004000, 0x200) != 0) {
