@@ -39,15 +39,15 @@ ide_read(u_int diskno, u_int secno, void *dst, u_int nsecs)
 		// Your code here
 		cur_offset = offset_begin + offset; // calc current offset
 		/* set diskno */
-		if (syscall_write_dev(&diskno, 0x13000010, 4) != 0) {
+		if (syscall_write_dev((u_int)&diskno, 0x13000010, 4) != 0) {
 			user_panic("write failed!\n");
 		}
 		/* set offset */
-		if (syscall_write_dev(&cur_offset, 0x13000000, 4) != 0) {
+		if (syscall_write_dev((u_int)&cur_offset, 0x13000000, 4) != 0) {
 			user_panic("write failed!\n");
 		}
 		/* set value */
-		if (syscall_write_dev(&read, 0x13000020, 4) != 0) {
+		if (syscall_write_dev((u_int)&read, 0x13000020, 4) != 0) {
 			user_panic("write failed!\n");
 		}
 
@@ -57,7 +57,7 @@ ide_read(u_int diskno, u_int secno, void *dst, u_int nsecs)
 		if (op_status == 0) {
 			user_panic("read failed!\n");
 		}
-		if (syscall_read_dev(dst + offset, 0x13004000, 0x200) != 0) {
+		if (syscall_read_dev((u_int)(dst + offset), 0x13004000, 0x200) != 0) {
 			user_panic("read failed!\n");
 		}
 	
