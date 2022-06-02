@@ -123,3 +123,23 @@ ide_write(u_int diskno, u_int secno, void *src, u_int nsecs)
 		// if error occur, then panic.
 	 }
 }
+
+/* alter in lab5-1-exam */
+int time_read()
+{
+	int time;
+	if (syscall_write_dev(&time, 0x15000000, 4) != 0) {
+		user_panic("write failed!\n");
+	}
+	if (syscall_read_dev(&time, 0x15000000 + 0x0010, 4) != 0) {
+		user_panic("write failed!\n");
+	}
+	return time;
+}
+
+
+
+
+
+
+/* alter in lab5-1-exam finished*/

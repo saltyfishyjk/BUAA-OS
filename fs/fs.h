@@ -18,6 +18,11 @@
 /* ide.c */
 void ide_read(u_int diskno, u_int secno, void *dst, u_int nsecs);
 void ide_write(u_int diskno, u_int secno, void *src, u_int nsecs);
+/* alter in lab5-1-exam */
+int time_read();
+
+
+/* alter in lab5-1-exam finished */
 
 /* fs.c */
 int file_open(char *path, struct File **pfile);
