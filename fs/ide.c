@@ -250,14 +250,14 @@ int raid4_read(u_int blockno, void *dst)
 		}
 		for (i = 1; i <= 5;i++) {
             if (i <= 4) {
-                ide_read(i, 2 * blockno, va, 1);
+                ide_read(i, 2 * blockno + 1, va, 1);
                 if (i == 1) {
                     user_bcopy(va, checknum, 512);
                 } else {
                     bxor512(va, checknum, checknum);
                 }
             } else {
-                ide_read(i, 2 * blockno, content, 1);
+                ide_read(i, 2 * blockno + 1, content, 1);
                 if (checkeq512(checknum, content) != 0) {
                     flag = -1;
                 }
