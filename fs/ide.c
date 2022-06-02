@@ -269,10 +269,74 @@ int raid4_read(u_int blockno, void *dst)
             va += 0x200;
         }
 		return flag;
-	} else if (cnt > 1) {
-		return cnt;
+	} else if (cnt == 1) {
+		if (!raid4_valid(5)) {
+			for (i = 1; i <= 4;i++) {
+				ide_read(i, 2 * blockno, va, 1);
+				va += 0x200;
+			}
+			for (i = 1; i <= 4;i++) {
+                ide_read(i, 2 * blockno + 1, va, 1);
+				va += 0x200;
+			}
+		} else {
+			int flagn;
+			for (i = 1; i <= 5; i++) {
+				if (!raid4_valid(i)) {
+					flagn = i;
+					va += 0x200;
+					continue;
+				}
+				if (i <= 4) {
+					ide_read(i, 2 * blockno, va, 1);
+				} else {
+					ide_read(i, 2 * blockno, checknum, 1);
+				}
+				va += 0x200;
+			}
+			va -= 0x200;
+			int ans[128];
+			for (i = 0; i < 128; i++) ans[i] = 0;
+			for (i = 1; i <= 5; i++) {
+				if (i != flagn) {
+					if (i <= 4) {
+						bxor512(va - (0x200 * (4 - i)), ans, ans);
+					} else {
+						bxor512(checknum, ans, ans);
+					}
+				}
+			}
+			user_bcopy(ans, va - (0x200 * (4 - flag)), 512);
+			for (i = 1; i <= 5; i++) {
+                if (!raid4_valid(i)) {
+                    flagn = i;
+                    va += 0x200;
+                    continue;
+                }
+                if (i <= 4) {
+                    ide_read(i, 2 * blockno + 1, va, 1);
+                } else {
+                    ide_read(i, 2 * blockno + 1, checknum, 1);
+                }
+				va += 0x200;
+            }
+			va -= 0x200;
+            // int ans[128];
+            for (i = 0; i < 128; i++) ans[i] = 0;
+            for (i = 1; i <= 5; i++) {
+                if (i != flagn) {
+					if (i <= 4) {
+                   		bxor512(va - (0x200 * (4 - i)), ans, ans);
+					} else {
+						bxor512(checknum, ans, ans);
+					}
+                }
+            }
+            user_bcopy(ans, va - (0x200 * (4 - flag)), 512);
+		}
+		return 1;
 	} else {
-		return 0;
+		return cnt;
 	}
 	
 }
