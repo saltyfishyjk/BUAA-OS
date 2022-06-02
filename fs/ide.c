@@ -306,7 +306,7 @@ int raid4_read(u_int blockno, void *dst)
 					}
 				}
 			}
-			user_bcopy(ans, va - (0x200 * (4 - flag)), 512);
+			user_bcopy(ans, va - (0x200 * (4 - flagn)), 512);
 			for (i = 1; i <= 5; i++) {
                 if (!raid4_valid(i)) {
                     flagn = i;
@@ -332,7 +332,7 @@ int raid4_read(u_int blockno, void *dst)
 					}
                 }
             }
-            user_bcopy(ans, va - (0x200 * (4 - flag)), 512);
+            user_bcopy(ans, va - (0x200 * (4 - flagn)), 512);
 		}
 		return 1;
 	} else {
