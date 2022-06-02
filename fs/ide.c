@@ -167,9 +167,9 @@ int raid4_write(u_int blockno, void *src)
 	void * va =  src;
 	for (i = 1;i <= 5; i++) {
 		if (i == 1) {
-			user_bcopy(va, &checknum, 512);
+			user_bcopy(va, checknum, 512);
 		} else {
-			bxor512(va, &checknum, &checknum);
+			bxor512(va, checknum, checknum);
 		}
 		if (!raid4_valid(i)) {
 			cnt++;
@@ -184,9 +184,9 @@ int raid4_write(u_int blockno, void *src)
 	}
 	for (i = 1;i <= 5; i++) {
         if (i == 1) {
-            user_bcopy(va, &checknum, 512);
+            user_bcopy(va, checknum, 512);
         } else {
-            bxor512(va, &checknum, &checknum);
+            bxor512(va, checknum, checknum);
         }
         if (!raid4_valid(i)) {
             // cnt++;
