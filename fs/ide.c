@@ -137,9 +137,41 @@ int time_read()
 	return time;
 }
 
+void raid0_write(u_int secno, void *src, u_int nsecs)
+{
+	int i;
+	int secnoMax = secno + nsecs;
+	u_int va = src;
+	for (i = secno; i < secnoMax; i++) {
+		if (i % 2 == 0) {
+			int j = i / 2;
+			ide_write(1, j, va, 1);
+		} else {
+			int j = (i - 1) / 2;
+			ide_write(2, j, va, 1);
+		}
+		va += 0x200;
+	}	
+}
 
+void raid0_read(u_int secno, void *dst, u_int nsecs)
+{
+	int i;
+	int j;
+	int secnoMax = secno + nsecs;
+	u_int va = dst;
+	for (i = secno; i < secnoMax; i++) {
+		if (i % 2 == 0) {
+			j = i / 2;
+			ide_read(1, j, va, 1);
+		} else {
+			j = (i - 1) / 2;
+			ide_read(2, j, va, 1);
+		}
+		va += 0x200;
+	}
 
-
+}
 
 
 /* alter in lab5-1-exam finished*/

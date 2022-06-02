@@ -20,7 +20,8 @@ void ide_read(u_int diskno, u_int secno, void *dst, u_int nsecs);
 void ide_write(u_int diskno, u_int secno, void *src, u_int nsecs);
 /* alter in lab5-1-exam */
 int time_read();
-
+void raid0_write(u_int secno, void *src, u_int nsecs);
+void raid0_read(u_int secno, void *dst, u_int nsecs);
 
 /* alter in lab5-1-exam finished */
 
