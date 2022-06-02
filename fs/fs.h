@@ -18,6 +18,11 @@
 /* ide.c */
 void ide_read(u_int diskno, u_int secno, void *dst, u_int nsecs);
 void ide_write(u_int diskno, u_int secno, void *src, u_int nsecs);
+/* alter in lab5-1-Extra */
+int raid4_valid(u_int diskno);
+int raid4_write(u_int blockno, void *src);
+int raid4_read(u_int blockno, void *dst);
+/* alter in lab5-1-Extra */
 
 /* fs.c */
 int file_open(char *path, struct File **pfile);

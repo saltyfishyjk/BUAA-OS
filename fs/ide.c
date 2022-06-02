@@ -123,3 +123,154 @@ ide_write(u_int diskno, u_int secno, void *src, u_int nsecs)
 		// if error occur, then panic.
 	 }
 }
+
+/* alter in lab5-1-Extra */
+int raid4_valid(u_int diskno)
+{
+	int ret;
+	int op_status;
+	//ide_read(diskno, 0, &ret, 1);
+	int offset_now = 0;
+	int read = 0;
+	if (syscall_write_dev(&diskno, 0x13000010, 4) != 0) user_panic("sth went wrong!\n");
+	if (syscall_write_dev(&offset_now, 0x13000000, 4) != 0) user_panic("sth went wrong!\n");
+	if (syscall_write_dev(&read, 0x13000020, 4) != 0) user_panic("sth went wrong!\n");
+	
+	if (syscall_read_dev(&op_status, 0x13000030, 4) != 0) {
+		user_panic("sth went wrong in raid4_valid!\n");
+	}
+	if (op_status == 0) {
+		return 0;
+	} else {
+		return 1;
+	}
+}
+
+void bxor512(void *a, void *b, void *c)
+{
+	int cnt = 512;
+	while(cnt--) {
+		*(char *)c = (*(char *)a) ^ (*(char *)b);
+		a++;
+		b++;
+		c++;
+	}
+}
+
+
+
+int raid4_write(u_int blockno, void *src)
+{
+	int i;
+	int cnt = 0;
+	int checknum[128];
+	void * va =  src;
+	for (i = 1;i <= 5; i++) {
+		if (i == 1) {
+			user_bcopy(va, &checknum, 512);
+		} else {
+			bxor512(va, &checknum, &checknum);
+		}
+		if (!raid4_valid(i)) {
+			cnt++;
+			continue;
+		}
+		if (i <= 4) {
+			ide_write(i, 2 * blockno, va, 1);
+		} else {
+			ide_write(i, 2 * blockno, checknum, 1);
+		}
+		va += 0x200;
+	}
+	for (i = 1;i <= 5; i++) {
+        if (i == 1) {
+            user_bcopy(va, &checknum, 512);
+        } else {
+            bxor512(va, &checknum, &checknum);
+        }
+        if (!raid4_valid(i)) {
+            // cnt++;
+            continue;
+        }
+        if (i <= 4) {
+            ide_write(i, 2 * blockno + 1, va, 1);
+        } else {
+            ide_write(i, 2 * blockno + 1, checknum, 1);
+        }
+		va += 0x200;
+    }
+	return cnt;
+}
+
+int checkeq512(void *a, void *b)
+{
+	int cnt = 512;
+	while(cnt--) {
+		char x = *(char *)a;
+		char y = *(char *)b;
+		if (x != y) {
+			return -1;
+		}
+		a++;
+		b++;
+	}
+	return 0;
+}
+
+
+int raid4_read(u_int blockno, void *dst)
+{
+	int cnt = 0;
+	int i;
+	int checknum[128];
+	int content[128];
+	void *va = dst;
+	int flag = 0;
+	for (i = 1; i <= 5; i++) {
+		if (!raid4_valid(i)) {
+			cnt++;
+		}
+	}
+	if (cnt == 0) {
+		for (i = 1; i <= 5;i++) {
+			if (i <= 4) {
+				ide_read(i, 2 * blockno, va, 1);
+				if (i == 1) {
+					user_bcopy(va, checknum, 512);
+				} else {
+					bxor512(va, checknum, checknum);
+				}
+			} else {
+				ide_read(i, 2 * blockno, content, 1);
+				if (checkeq512(checknum, content) != 0) {
+					flag = -1;
+				}
+			}
+			va += 0x200;
+		}
+		for (i = 1; i <= 5;i++) {
+            if (i <= 4) {
+                ide_read(i, 2 * blockno, va, 1);
+                if (i == 1) {
+                    user_bcopy(va, checknum, 512);
+                } else {
+                    bxor512(va, checknum, checknum);
+                }
+            } else {
+                ide_read(i, 2 * blockno, content, 1);
+                if (checkeq512(checknum, content) != 0) {
+                    flag = -1;
+                }
+            }
+            va += 0x200;
+        }
+		return flag;
+	} else if (cnt > 1) {
+		return cnt;
+	} else {
+		return 0;
+	}
+	
+}
+
+/* alter in lab5-1-Extra finished */
