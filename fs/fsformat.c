@@ -9,7 +9,7 @@
 #include <assert.h>
 #include <fcntl.h>
 #include <unistd.h>
-
+#include <dirent.h>
 /* Prevent inc/types.h, included from inc/fs.h,
  * From attempting to redefine types defined in the host's inttypes.h. */
 #define _INC_TYPES_H_
@@ -275,6 +275,52 @@ void write_file(struct File *dirf, const char *path) {
 //      We ASSUME that this funcion will never fail
 void write_directory(struct File *dirf, char *name) {
     // Your code here
+	DIR *dir;
+	struct dirent *info;
+	struct File *ndir, *pdir;
+    int dirlen;
+    char sub[512];
+    if (strcmp(name, ".") == 0 || strcmp(name, "..") == 0)
+        return;
+    dir = opendir(name);
+    if (dir == NULL)
+        return;
+    dirlen = strlen(name);
+    if (name[dirlen - 1] == '/')
+        name[dirlen - 1] = 0;
+    pdir = create_file(dirf);
+    char *p, *q;
+    p = q = name;
+    while (*p)
+    {
+        if (*p == '/')
+        {
+            q = ++p;
+        }
+        else
+        {
+            p++;
+        }
+    }
+    strcpy(pdir->f_name, q);
+    pdir->f_type = FTYPE_DIR;
+    while ((info = readdir(dir)) != NULL)
+    {
+        if (info->d_type == DT_DIR)
+        {
+            if (strcmp(info->d_name, ".") != 0 && strcmp(info->d_name, "..") != 0)
+            {
+                sprintf(sub, "%s/%s", name, info->d_name);
+                write_directory(pdir, sub);
+            }
+        }
+        else
+        {
+            sprintf(sub, "%s/%s", name, info->d_name);
+            write_file(pdir, sub);
+        }
+    }
+    closedir(dir);
 }
 
 int main(int argc, char **argv) {
