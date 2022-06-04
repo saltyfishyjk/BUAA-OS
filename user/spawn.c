@@ -111,11 +111,14 @@ int spawn(char *prog, char **argv)
 	int r;
 	int fd;
 	u_int child_envid;
-	int size, text_start;
+	int size, text_start, count;
 	u_int i, *blk;
 	u_int esp;
 	Elf32_Ehdr* elf;
 	Elf32_Phdr* ph;
+	Elf32_Ehdr *ehdr;
+    Elf32_Phdr *phdr;
+	int res;
 	// Note 0: some variable may be not used,you can cancel them as you like
 	// Step 1: Open the file specified by `prog` (prog is the path of the program)
 	if((r=open(prog, O_RDONLY))<0){
@@ -124,8 +127,20 @@ int spawn(char *prog, char **argv)
 	}
 	// Your code begins here
 	// Before Step 2 , You had better check the "target" spawned is a execute bin 
+	fd = r;
+	if ((r = readn(fd, elfbuf, sizeof(Elf32_Ehdr))) < 0) user_panic("read ehdr failed");
+	ehdr = elfbuf;
+
+	res = ((struct Filefd *) num2fd(fd))->f_file.f_size;
+
+	if (res < 4 || !usr_is_elf_format(ehdr) || ehdr->e_type != 2)user_panic("not elf or exec");
+	size = ehdr->e_phentsize;
+	text_start = ehdr->e_phoff;
+	count = ehdr->e_phnum;
 	// Step 2: Allocate an env (Hint: using syscall_env_alloc())
+	if ((child_envid = syscall_env_alloc()) < 0)user_panic("syscall_env_alloc failed");
 	// Step 3: Using init_stack(...) to initialize the stack of the allocated env
+	init_stack(child_envid, argv, &esp);
 	// Step 3: Map file's content to new env's text segment
 	//        Hint 1: what is the offset of the text segment in file? try to use objdump to find out.
 	//        Hint 2: using read_map(...)
@@ -136,7 +151,17 @@ int spawn(char *prog, char **argv)
 	// Note2: You can achieve this func in any way ，remember to ensure the correctness
 	//        Maybe you can review lab3 
 	// Your code ends here
-
+	
+	for (i = 0; i < count; i++) {
+        if ((r = seek(fd, text_start)) < 0)user_panic("seek failed");
+        if ((r = readn(fd, elfbuf, size)) < 0)user_panic("readn failed");
+        phdr = elfbuf;
+        if (phdr->p_type == PT_LOAD) {
+            if ((r = usr_load_elf(fd, phdr, child_envid)) < 0)user_panic("load failed");
+        }
+        text_start += size;
+    }
+	
 	struct Trapframe *tf;
 	writef("\n::::::::::spawn size : %x  sp : %x::::::::\n",size,esp);
 	tf = &(envs[ENVX(child_envid)].env_tf);
