@@ -157,7 +157,16 @@ pipewrite(struct Fd *fd, const void *vbuf, u_int n, u_int offset)
 	struct Pipe *p;
 	char *wbuf;
 	
-
+	p = fd2data(fd);
+    wbuf = vbuf;
+    for (i = 0; i < n; i++) {
+        while (p->p_wpos - p->p_rpos == BY2PIPE) {
+            if (_pipeisclosed(fd, p)) return 0;
+            syscall_yield();
+        }
+        p->p_buf[p->p_wpos % BY2PIPE] = wbuf[i];
+        p->p_wpos++;
+    }
 //	return -E_INVAL;
 	
 	
