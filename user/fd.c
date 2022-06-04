@@ -128,7 +128,7 @@ close_all(void)
 	}
 }
 
-int
+/*int
 dup(int oldfdnum, int newfdnum)
 {
 	int i, r;
@@ -173,6 +173,51 @@ err:
 	}
 
 	return r;
+}*/
+int
+dup(int oldfdnum, int newfdnum) {
+    int i, r;
+    u_int ova, nva, pte;
+    struct Fd *oldfd, *newfd;
+
+    if ((r = fd_lookup(oldfdnum, &oldfd)) < 0) {
+        return r;
+    }
+
+    close(newfdnum);
+    newfd = (struct Fd *) INDEX2FD(newfdnum);
+    ova = fd2data(oldfd);
+    nva = fd2data(newfd);
+
+    if ((*vpd)[PDX(ova)]) {
+        for (i = 0; i < PDMAP; i += BY2PG) {
+            pte = (*vpt)[VPN(ova + i)];
+
+            if (pte & PTE_V) {
+                // should be no error here -- pd is already allocated
+                if ((r = syscall_mem_map(0, ova + i, 0, nva + i,
+                                         pte & (PTE_V | PTE_R | PTE_LIBRARY))) < 0) {
+                    goto err;
+                }
+            }
+        }
+    }
+
+    if ((r = syscall_mem_map(0, (u_int) oldfd, 0, (u_int) newfd,
+                             ((*vpt)[VPN(oldfd)]) & (PTE_V | PTE_R | PTE_LIBRARY))) < 0) {
+        goto err;
+    }
+
+    return newfdnum;
+
+    err:
+    syscall_mem_unmap(0, (u_int) newfd);
+
+    for (i = 0; i < PDMAP; i += BY2PG) {
+        syscall_mem_unmap(0, nva + i);
+    }
+
+    return r;
 }
 
 // Overview:
