@@ -121,8 +121,18 @@ piperead(struct Fd *fd, void *vbuf, u_int n, u_int offset)
 	struct Pipe *p;
 	char *rbuf;
 	
-
-
+	p = fd2data(fd);
+	rbuf = vbuf;
+	for (i = 0; i < n; i++) {
+		while(p->p_rpos >= p->p_wpos) {
+			if (_pipeisclosed(fd, p) || i > 0) {
+				syscall_yield();
+			}
+		}
+		rbuf[i] = p->p_buf[p->p_rpos % BY2PIPE];
+		p->p_rpos++;
+	}
+	return n;
 	user_panic("piperead not implemented");
 //	return -E_INVAL;
 }
