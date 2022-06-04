@@ -131,6 +131,33 @@ pgfault(u_int va)
  */
 /*** exercise 4.10 ***/
 static void
+duppage(u_int envid, u_int pn) {
+    u_int addr = pn << PGSHIFT;
+    u_int perm = ((Pte * )(*vpt))[pn] & 0xfff;
+    if ((perm & PTE_R) == 0) {
+        if (syscall_mem_map(0, addr, envid, addr, perm) < 0) {
+            user_panic("user panic mem map error!1");
+        }
+    } else if (perm & PTE_LIBRARY) {
+        if (syscall_mem_map(0, addr, envid, addr, perm) < 0) {
+            user_panic("user panic mem map error!2");
+        }
+    } else if (perm & PTE_COW) {
+        if (syscall_mem_map(0, addr, envid, addr, perm) < 0) {
+            user_panic("user panic mem map error!3");
+        }
+    } else {
+        if (syscall_mem_map(0, addr, envid, addr, perm | PTE_COW) < 0) {
+            user_panic("user panic mem map error!4");
+        }
+        if (syscall_mem_map(0, addr, 0, addr, perm | PTE_COW) < 0) {
+            user_panic("user panic mem map error!5");
+        }
+    }
+
+    //	user_panic("duppage not implemented");
+}
+/*static void
 duppage(u_int envid, u_int pn)
 {
 	u_int addr;
@@ -151,7 +178,7 @@ duppage(u_int envid, u_int pn)
 	}
 
 	//	user_panic("duppage not implemented");
-}
+}*/
 
 /* Overview:
  * 	User-level fork. Create a child and then copy our address space
