@@ -128,6 +128,10 @@ piperead(struct Fd *fd, void *vbuf, u_int n, u_int offset)
 	char *rbuf;
 	
 	p = fd2data(fd);
+	while (p->p_rpos == p->p_wpos) {
+        if (_pipeisclosed(fd, p)) return 0;
+        syscall_yield();
+    }
 	rbuf = vbuf;
 	for (i = 0; i < n; i++) {
 		while(p->p_rpos >= p->p_wpos) {
