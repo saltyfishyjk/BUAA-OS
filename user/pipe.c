@@ -86,7 +86,13 @@ _pipeisclosed(struct Fd *fd, struct Pipe *p)
 	// the pipe is closed.
 	int pfd,pfp,runs;
 	
-
+	do {
+		runs = env->env_runs;
+		pfd = pageref(fd);
+		pfp = pageref(p);
+	} while (runs != env->env_runs);
+	
+	return pfp == pfd;
 
 
 	user_panic("_pipeisclosed not implemented");
