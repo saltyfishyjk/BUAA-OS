@@ -95,7 +95,7 @@ _pipeisclosed(struct Fd *fd, struct Pipe *p)
 	return pfp == pfd;
 
 
-	user_panic("_pipeisclosed not implemented");
+	//user_panic("_pipeisclosed not implemented");
 //	return 0;
 }
 
@@ -139,7 +139,7 @@ piperead(struct Fd *fd, void *vbuf, u_int n, u_int offset)
 		p->p_rpos++;
 	}
 	return n;
-	user_panic("piperead not implemented");
+	//user_panic("piperead not implemented");
 //	return -E_INVAL;
 }
 
@@ -161,7 +161,7 @@ pipewrite(struct Fd *fd, const void *vbuf, u_int n, u_int offset)
 //	return -E_INVAL;
 	
 	
-	user_panic("pipewrite not implemented");
+	//user_panic("pipewrite not implemented");
 
 	return n;
 }
