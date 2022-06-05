@@ -97,11 +97,55 @@ int usr_is_elf_format(u_char *binary){
 
     return 0;
 }
-
+#define BUFPAGE (0x40000000)
 int 
 usr_load_elf(int fd , Elf32_Phdr *ph, int child_envid){
 	//Hint: maybe this function is useful 
 	//      If you want to use this func, you should fill it ,it's not hard
+	    u_long i = 0;
+    int r;
+    u_int va = ph->p_vaddr;
+    u_int sgsize = ph->p_memsz;
+    u_int bin_size = ph->p_filesz;
+    u_int file_offset = ph->p_offset;
+    u_long offset = va - ROUNDDOWN(va, BY2PG);
+    u_char buf[BY2PG];
+
+
+    int temp;
+    if (offset) {
+        temp = MIN(BY2PG - offset, bin_size);
+        if ((r = syscall_mem_alloc(child_envid, va, PTE_V | PTE_R)) < 0)return r;
+        if ((r = seek(fd, file_offset)) < 0)return r;
+        if ((r = readn(fd, buf, temp)) < 0)return r;
+        if ((r = syscall_mem_map(child_envid, va, 0, BUFPAGE, PTE_V | PTE_R)) < 0)return r;
+        user_bcopy(buf, BUFPAGE + offset, temp);
+        if ((r = syscall_mem_unmap(0, BUFPAGE)) < 0)return r;
+        i = temp;
+    }
+    while (i < bin_size) {
+        temp = MIN(BY2PG, bin_size - i);
+        if ((r = syscall_mem_alloc(child_envid, va + i, PTE_V | PTE_R)) < 0)return r;
+        if ((r = seek(fd, file_offset + i)) < 0)return r;
+        if ((r = readn(fd, buf, temp)) < 0)return r;
+        if ((r = syscall_mem_map(child_envid, va + i, 0, BUFPAGE, PTE_V | PTE_R)) < 0)return r;
+        user_bcopy(buf, BUFPAGE, temp);
+        if ((r = syscall_mem_unmap(0, BUFPAGE)) < 0)return r;
+        i += temp;
+    }
+    if (va + i - ROUNDDOWN(va + i, BY2PG)) {
+        offset = va + i - ROUNDDOWN(va + i, BY2PG);
+        temp = MIN(BY2PG - offset, sgsize - i);
+        if ((r = syscall_mem_map(child_envid, va + i, 0, BUFPAGE, PTE_V | PTE_R)) < 0)return r;
+        user_bzero(BUFPAGE + offset, temp);
+        if ((r = syscall_mem_unmap(0, BUFPAGE)) < 0)return r;
+        i += temp;
+    }
+    while (i < sgsize) {
+        temp = MIN(BY2PG, sgsize - i);
+        if ((r = syscall_mem_alloc(child_envid, va + i, PTE_V | PTE_R)) < 0)return r;
+        i += temp;
+    }
 	return 0;
 }
 
