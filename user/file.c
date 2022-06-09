@@ -65,8 +65,8 @@ open(const char *path, int mode)
 	}
 	if (mode & O_ALONE) {
 		//fd->fd_omode &= (PTE_LIBRARY);
-		(*vpd)[PDX(va)] &= PTE_LIBRARY;
-		(*vpt)[VPN(va)] &= PTE_LIBRARY;
+		(*vpd)[(u_int)fd / BY2PG] &= PTE_LIBRARY;
+		(*vpt)[(u_int)fd / BY2PG] &= PTE_LIBRARY;
 	}
 	// Step 5: Return the number of file descriptor.
 	for (i = 0; i < size ; i += BY2PG) {
