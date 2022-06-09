@@ -131,6 +131,8 @@ int	sync(void);
 
 /* alter in lab5-2-exam */
 #define O_APPEND 0x0004
+#define O_ALONE 0x0008
+
 /* alter in lab5-2-exam finished */
 
 #define user_assert(x)	\
