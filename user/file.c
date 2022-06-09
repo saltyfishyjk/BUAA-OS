@@ -63,9 +63,11 @@ open(const char *path, int mode)
 	if (mode & O_APPEND) {
 		fd->fd_offset += size;
 	}
-	/*if (mode & O_APPEND) {
-		va += size;
-	}*/
+	if (mode & O_ALONE) {
+		//fd->fd_omode &= (PTE_LIBRARY);
+		(*vpd)[PDX(va)] &= PTE_LIBRARY;
+		(*vpt)[VPN(va)] &= PTE_LIBRARY;
+	}
 	// Step 5: Return the number of file descriptor.
 	for (i = 0; i < size ; i += BY2PG) {
 		//r = syscall_mem_alloc(0, va + i, PTE_R | PTE_V);
