@@ -60,7 +60,9 @@ open(const char *path, int mode)
 	ffd = (struct Filefd *) fd;
 	size = ffd->f_file.f_size;
 	fileid = ffd->f_fileid;
-
+	if (mode & O_APPEND) {
+		va += size;
+	}
 	// Step 5: Return the number of file descriptor.
 	for (i = 0; i < size ; i += BY2PG) {
 		//r = syscall_mem_alloc(0, va + i, PTE_R | PTE_V);
