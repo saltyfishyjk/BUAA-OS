@@ -42,6 +42,17 @@ struct Env {
 	// Lab 6 scheduler counts
 	u_int env_runs;			// number of times been env_run'ed
 	u_int env_nop;                  // align to avoid mul instruction
+	
+	/* Lab4-challenge altered begin */
+	/* thread related */
+	u_int thread_parent; // main thread id
+	u_int stacktop; // thread stack top
+	
+	u_int cancel_state; // thread cancel state
+	u_int cancel_type; // thread cancel type
+	u_int is_cancled; // if reveived cancel request from other thread
+	pthread_attr_t attr; // thread attribute
+	
 };
 
 LIST_HEAD(Env_list, Env);
