@@ -18,6 +18,60 @@
 #define ENV_RUNNABLE		1
 #define ENV_NOT_RUNNABLE	2
 
+/* Lab4-challenge alter begin */
+/* define values */
+#define MAX_NAME 20
+#define MAXN 50
+
+/* thread types */
+typedef u_int pthread_t; // thread id, equals mkenvid in MOS
+typedef u_int pthread_key_t; // thread private key value
+/* thread attribute */
+typedef struct{
+	u_int detachstate; // thread detach state
+	u_int stacksize; // thread stack size
+}pthread_attr_t;
+/* semaphore types */
+/* semaphore */
+typedef struct{
+	int val; // sem value 
+	int cnt; // sem cnt. represents how many threads can block on it
+}sem_t;
+/* named sem, we store some of it */
+struct Named_Sem{
+	char name[MAX_NAME + 1];
+	sem_t sem;
+};
+/* thread key data structure */
+struct Key{
+	int tag; // flag if the position is used
+	void (*destructor)(void *); // destruct function
+};
+/* Clean up function structure */
+struct Cleanup{
+	void (*rtn)(void *); // function address
+	void *arg; // arguments
+};
+
+#define E_CANCEL_STATE_DISABLE 13 // thread cancel state is DISABLE
+#define E_NO_THREAD 14 // no relevant thread
+#define E_IS_DETACHED 15 // relevant thread is detached
+#define E_SEM 16 // init sem
+#define ENV_ZOMBIE 3 // zombie thread
+
+#define PTHREAD_CANCEL_DISABLE 0 // thread cancel state is DISABLE
+#define PTHREAD_CANCEL_ENABLE 1 // thread cancel state is ENABLE
+
+#define PTHREAD_CANCEL_ASYNCHRONOUS 0 // thread cancel state is asynchronous
+#define PTHREAD_CANCEL_DEFERRED 1 // thread cancel state is deferred
+
+#define PTHREAD_CREATE_JOINABLE 0 // thread is not joined
+#define PTHREAD_CREATE_DETACHED 1 // thread is detached 
+
+//#define MAX_NAME 20
+//#define MAXN 50
+/* Lab4-challenge alter end */
+
 struct Env {
 	struct Trapframe env_tf;        // Saved registers
 	LIST_ENTRY(Env) env_link;       // Free list
@@ -52,7 +106,17 @@ struct Env {
 	u_int cancel_type; // thread cancel type
 	u_int is_cancled; // if reveived cancel request from other thread
 	pthread_attr_t attr; // thread attribute
+	u_int is_joined; // if being waited to end by other threads
+	void *value; // value passed when THIS thread uses pthread_exit
+	void **ptr; // ptr passed by other thread when using pthread_join
 	
+	void *key_value[MAXN]; // Thread Specific Data
+	struct Cleanup sk[MAXN]; // clean up function stack 
+	int top; // thread clean up function stack top
+	
+	void (*prepare)(void); // address of prepare function in atfork
+	void (*parent)(void); // address of parent function in atfork
+	void (*child)(void); // address of child function in atfork
 };
 
 LIST_HEAD(Env_list, Env);
