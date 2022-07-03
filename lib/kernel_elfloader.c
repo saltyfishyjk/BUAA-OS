@@ -43,22 +43,21 @@ int is_elf_format(u_char *binary)
  *   Return 0 if success. Otherwise return < 0.
  *   If success, the entry point of `binary` will be stored in `start`
  */
-/*** exercise 3.7 ***/
 int load_elf(u_char *binary, int size, u_long *entry_point, void *user_data,
 			 int (*map)(u_long va, u_int32_t sgsize,
 						u_char *bin, u_int32_t bin_size, void *user_data))
 {
 	Elf32_Ehdr *ehdr = (Elf32_Ehdr *)binary;
 	Elf32_Phdr *phdr = NULL;
-	/* As a loader, we just care about segment,
-         * so we just parse program headers.
-         */
+	 /* As a loader, we just care about segment,
+           * so we just parse program headers.
+           */
 	u_char *ptr_ph_table = NULL;
         Elf32_Half ph_entry_count;
         Elf32_Half ph_entry_size;
         int r;
 	
-	// check whether `binary` is a ELF file.
+	 // check whether `binary` is a ELF file.
 	if (size < 4 || !is_elf_format(binary)) {
                 return -1;
         }
@@ -71,13 +70,16 @@ int load_elf(u_char *binary, int size, u_long *entry_point, void *user_data,
                 phdr = (Elf32_Phdr *)ptr_ph_table;
 
                 if (phdr->p_type == PT_LOAD) {
-	/* Your task here!  */
+	 /* Your task here!  */
         /* Real map all section at correct virtual address.Return < 0 if error. */
         /* Hint: Call the callback function you have achieved before. */
-					r = map(phdr->p_vaddr, phdr->p_memsz,  binary + phdr->p_offset, phdr->p_filesz, user_data);
-					if (r != 0) {
-						return r;
-					}	
+		r = map((u_long)(phdr->p_vaddr),(u_int32_t)(phdr->p_memsz),(phdr->p_offset + binary),(u_int32_t)(phdr->p_filesz),user_data);
+		if (r < 0)
+			return r;
+		
+		
+
+
                 }
 
                 ptr_ph_table += ph_entry_size;

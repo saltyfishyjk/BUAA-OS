@@ -32,7 +32,20 @@ void *set_except_vector(int n, void *addr)
 }
 
 
-/*** exercise 4.11 ***/
+struct pgfault_trap_frame {
+    u_int fault_va;
+    u_int err;
+    u_int sp;
+    u_int eflags;
+    u_int pc;
+    u_int empty1;
+    u_int empty2;
+    u_int empty3;
+    u_int empty4;
+    u_int empty5;
+};
+
+
 void
 page_fault_handler(struct Trapframe *tf)
 {
@@ -51,5 +64,6 @@ page_fault_handler(struct Trapframe *tf)
         }
     // TODO: Set EPC to a proper value in the trapframe
 	tf->cp0_epc = curenv->env_pgfault_handler;
+
     return;
 }

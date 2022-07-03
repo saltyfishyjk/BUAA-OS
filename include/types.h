@@ -8,25 +8,27 @@
 #define NULL ((void *) 0)
 #endif /* !NULL */
 
-
-typedef unsigned char            u_int8_t;
-typedef short                     int16_t;
-typedef unsigned short          u_int16_t;
-typedef int                       int32_t;
-typedef unsigned int            u_int32_t;
-typedef long long                 int64_t;
-typedef unsigned long long      u_int64_t;
+typedef unsigned __attribute__((__mode__(QI))) u_int8_t;
+typedef int      __attribute__((__mode__(HI))) int16_t;
+typedef unsigned __attribute__((__mode__(HI))) u_int16_t;
+typedef int      __attribute__((__mode__(SI))) int32_t;
+typedef unsigned __attribute__((__mode__(SI))) u_int32_t;
+typedef int      __attribute__((__mode__(DI))) int64_t;
+typedef unsigned __attribute__((__mode__(DI))) u_int64_t;
 
 typedef int32_t                 register_t;
 
 typedef	unsigned char	u_char;
 typedef	unsigned short	u_short;
 typedef	unsigned int	u_int;
+typedef unsigned int 	pthread_t;
+typedef unsigned int	pthread_attr_t;
 typedef	unsigned long	u_long;
+typedef struct sem	sem_t;
 
 typedef	u_int64_t	u_quad_t;	/* quads */
 typedef	int64_t		quad_t;
-typedef	quad_t *	qaddr_t;
+typedef	quad_t 	*qaddr_t;
 
 typedef u_int32_t        size_t;
 

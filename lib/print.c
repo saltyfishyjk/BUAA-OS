@@ -47,90 +47,77 @@ lp_Print(void (*output)(void *, char *, int),
     char *s;
     long int num;
 
-	
-
-    int longFlag; // flag if is long type
-    int negFlag; // flag if is negative number
-    int width; // signal width of output
-    int prec; // signal precision of decimals
-    int ladjust; // signal if is left justifying
-    char padc; // char used to fill extra position
+    int longFlag;
+    int negFlag;
+    int width;
+    int prec;
+    int ladjust;
+    char padc;
 
     int length;
 
-    /*
-        Exercise 1.5. Please fill in two parts in this file.
-    */
-
     for(;;) {
-
-        /* Part1: your code here */
-
 	{ 
-	    /* scan for the next '%' */
-		char *curFmt = fmt;
-		// when we do get chars need no format, we simpily output them
-		// when we get '\0', exit the loop
-		// when we get '%', exit the loop and turn to analyze the format
-		while(1) {
-			if (*curFmt == '\0') {
-				break;
-			}
-			if (*curFmt == '%') {
-				break;
-			}
-			curFmt++;
+		s = buf;
+		while ((*fmt != '\0')&&(*fmt != '%')&&(s - buf < LP_MAX_BUF - 1))    
+		{
+			*s = *fmt;
+			s++;
+			fmt++;
 		}
-	    /* flush the string found so far */
-		// these chars need no format and just output them
-		OUTPUT(arg, fmt, curFmt-fmt);
-		fmt = curFmt;
-	    /* check "are we hitting the end?" */
-		// when read '\0', exit the loop and the output
-		if (*fmt == '\0') {
-			break;
-		}
-	}
-	
-	/* we found a '%' */
-	// pass the '%' and get to parse chars after it
-	fmt++;
-	/* check for long */
-	padc = ' '; // store the char needed to fill extra positions
-	ladjust = 0; // signal if is left justifying
-	if (*fmt == '-') {
-		// get '-', signal that it is left justifying, and pass '-'
-		ladjust = 1;
+		*s = '\0';
+		if (s - buf > 0)
+			OUTPUT(arg, buf, s-buf);
+		if (*fmt == '\0') break;
+		if (*fmt != '%') continue;
 		fmt++;
+		
+		/* scan for the next '%' */
+
+	    /* flush the string found so far */
+
+	    /* are we hitting the end? */
 	}
-	if (*fmt == '0') {
-		// get '0', signal that it needs 0 to fill extra positions, and pass '0'
+	ladjust = 0;
+	width = 0;
+	longFlag = 0;
+	prec = 0;
+	padc = ' ';
+	if (*fmt == '-') 
+	{
+		ladjust = 1; 
+		padc = ' '; 
+		fmt++; 
+	} else if (*fmt == '0')
+	{
+		ladjust = 0;
 		padc = '0';
 		fmt++;
 	}
-	width = 0;
-	while (IsDigit(*fmt)) {
-		width = width * 10 + Ctod(*fmt); // Ctod func is defined at the beginning which meas char subs '0'
+	while (IsDigit(*fmt))
+	{
+		width = width*10 + *fmt - '0';
 		fmt++;
 	}
-	/* check for other prefixes */
-	if (*fmt == '.') {
-		prec = 0;
+	if (*fmt == '.') fmt++;
+	while (IsDigit(*fmt))
+	{
+		prec = prec*10 + *fmt - '0';
 		fmt++;
-		while (IsDigit(*fmt)) {
-			prec = prec * 10 + Ctod(*fmt);
-			fmt++;
-		}
-	} else {
-		prec = 6; // default
 	}
-	/* check format flag */
-	longFlag = 0;
-	if (*fmt == 'l') {
+	if (*fmt == 'l') 
+	{
+		fmt++;
 		longFlag = 1;
-		fmt++;
 	}
 
+	/* we found a '%' */
+	
+	/* check for long */
+
+	/* check for other prefixes */
+
+	/* check format flag */
 	negFlag = 0;
 	switch (*fmt) {
 	 case 'b':
@@ -150,19 +137,13 @@ lp_Print(void (*output)(void *, char *, int),
 	    } else { 
 		num = va_arg(ap, int); 
 	    }
-	    
-		/*  Part2:
-			your code here.
-			Refer to other part (case 'b',case 'o' etc.) and func PrintNum to complete this part.
-			Think the difference between case 'd' and others. (hint: negFlag).
-		*/
 	    if (num < 0) {
-			num = -num;
-			negFlag = 1;
-		}
-		length = PrintNum(buf, num, 10, negFlag, width, ladjust, padc, 0);
-		OUTPUT(arg, buf, length);
-		break;
+		num = - num;
+		negFlag = 1;
+	    }
+	    length = PrintNum(buf, num, 10, negFlag, width, ladjust, padc, 0);
+	    OUTPUT(arg, buf, length);
+	    break;
 
 	 case 'o':
 	 case 'O':

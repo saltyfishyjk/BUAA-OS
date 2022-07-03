@@ -13,13 +13,20 @@ USERLIB := printf.o \
 		pgfault.o \
 		syscall_lib.o \
 		ipc.o \
-		string.o
+		string.o \
+		fd.o \
+		pageref.o \
+		file.o \
+		pipe.o \
+		fsipc.o \
+		console.o \
+		fprintf.o \
+		pthread.o \
+		sem.o
 
 CFLAGS += -nostdlib -static
 
-all: tltest.x tltest.b \
-	fktest.x fktest.b pingpong.x pingpong.b idle.x \
-	$(USERLIB) entry.o syscall_wrap.o
+all: ptstacktest.x ptstacktest.b seller.x seller.b semtest.x semtest.b ptjointest.x ptjointest.b ptcanceltest.x ptcanceltest.b pttest.x pttest.b ptexittest.x ptexittest.b fktest.x fktest.b pingpong.x pingpong.b idle.x $(USERLIB) entry.o syscall_wrap.o
 
 %.x: %.b.c
 	echo cc1 $<
@@ -31,7 +38,7 @@ all: tltest.x tltest.b \
 	chmod +x ./bintoc
 	./bintoc $* $< > $@~ && mv -f $@~ $@
 #	grep \. $@
-
+	
 %.b: entry.o syscall_wrap.o %.o $(USERLIB)
 	echo ld $@
 	$(LD) -o $@ $(LDFLAGS) -G 0 -static -n -nostdlib -T ./user.lds $^

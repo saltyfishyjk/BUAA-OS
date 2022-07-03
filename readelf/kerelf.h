@@ -106,7 +106,7 @@ typedef struct{
         Elf32_Word sh_info;                 /* Section extra info */
         Elf32_Word sh_addralign;            /* Section alignment */
         Elf32_Word sh_entsize;              /* Section entry size */
-} Elf32_Shdr;
+}Elf32_Shdr;
 
 
 /* Program segment header.  */

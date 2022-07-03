@@ -67,7 +67,6 @@ END(handle_int)
 
 timer_irq:
 
-	sb zero, 0xb5000110
 1:	j	sched_yield
 	nop
 	/*li t1, 0xff

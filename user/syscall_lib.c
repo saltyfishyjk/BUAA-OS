@@ -87,3 +87,53 @@ syscall_cgetc()
 {
 	return msyscall(SYS_cgetc, 0, 0, 0, 0, 0);
 }
+
+int syscall_thread_destroy(u_int threadid)
+{
+	return msyscall(SYS_thread_destroy, threadid, 0, 0, 0, 0);
+}
+
+u_int syscall_getthreadid() 
+{
+	return msyscall(SYS_get_threadid, 0, 0, 0, 0, 0);
+}
+
+int syscall_thread_alloc()
+{
+	return msyscall(SYS_thread_alloc, 0, 0, 0, 0, 0);
+}
+
+int syscall_set_thread_status(u_int threadid,u_int status)
+{
+	return msyscall(SYS_set_thread_status,threadid,status,0,0,0);
+}
+
+int syscall_thread_join(u_int threadid, void **value_ptr) 
+{
+	return msyscall(SYS_thread_join,threadid,value_ptr,0,0,0);
+}
+
+int syscall_sem_destroy(sem_t *sem)
+{
+	return msyscall(SYS_sem_destroy,sem,0,0,0,0);
+}
+
+int syscall_sem_wait(sem_t *sem)
+{
+	return msyscall(SYS_sem_wait,sem,0,0,0,0);
+}
+
+int syscall_sem_trywait(sem_t *sem)
+{
+	return msyscall(SYS_sem_trywait,sem,0,0,0,0);
+}
+
+int syscall_sem_post(sem_t *sem)
+{
+	return msyscall(SYS_sem_post,sem,0,0,0,0);
+}
+
+int syscall_sem_getvalue(sem_t *sem,int *valp)
+{
+	return msyscall(SYS_sem_getvalue,sem,valp,0,0,0);
+}
