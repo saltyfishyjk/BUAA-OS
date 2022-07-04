@@ -9,16 +9,16 @@ void *test(void *arg) {
 	writef("arg 1 is %d\n",arg1);
 	writef("arg 2 is %d\n",arg2);
 	writef("arg 3 is %d\n",arg3);
-	writef("a is %d\n",*father_a);
+	writef("public value a is %d\n",*father_a);
 	++(*father_b);
-	writef("b is change\n");
+	writef("public value b is changed\n");
 	while (1) {
 		writef("");
 		c = *father_a;
 		if (*father_a != 1)
 			break;
 	}
-	writef("a is %d\n",c);
+	writef("public value a is %d\n",c);
 }
 void umain() {
 	int a;
@@ -36,7 +36,7 @@ void umain() {
 	args[4] = &b;
 	pthread_t son;
 	thread = pthread_create(&son,NULL,test,(void *) args);
-	writef("create successful\n");
+	writef("Thread created successfully\n");
 	if (!thread) {
 		while (1) {
 			writef("");

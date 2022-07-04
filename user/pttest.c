@@ -9,9 +9,9 @@ void *test(void *arg) {
 	writef("arg 1 is %d\n",arg1);
 	writef("arg 2 is %d\n",arg2);
 	writef("arg 3 is %d\n",arg3);
-	writef("a is %d\n",a);
+	writef("public value a is %d\n",a);
 	++b;
-	writef("b is change\n");
+	writef("public value b is change\n");
 	while (1) {
 		writef("");
 		if (a != 1)
@@ -31,7 +31,7 @@ void umain() {
 	args[2] = 3;
 	pthread_t son;
 	thread = pthread_create(&son,NULL,test,(void *) args);
-	writef("create successful\n");
+	writef("Thread created successfully\n");
 	if (!thread) {
 		while (1) {
 			writef("");
