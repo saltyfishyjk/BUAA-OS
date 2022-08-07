@@ -1,5 +1,7 @@
 # BUAA-OS-2022 源码
 
+![license: MIT](https://img.shields.io/badge/license-MIT-green)
+
 Author : saltyfishyjk
 
 ## 作者简介
